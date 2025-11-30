@@ -1,0 +1,51 @@
+final List<Map<String, dynamic>> shoes = [
+  {
+    "name": "Nike Jordan",
+    "brands": 1,
+    "price": 5850000,
+    "image": "https://picsum.photos/id/7/400/400",
+    "descriptions": "Mẫu giày thể thao bán chạy nhất của Nike.",
+  },
+  {
+    "name": "Nike Air Max",
+    "brands": 1,
+    "price": 9850000,
+    "image": "https://picsum.photos/id/8/400/400",
+    "descriptions": "Đế khí êm ái, thoáng và nhẹ.",
+  },
+  {
+    "name": "Jordan Pro",
+    "brands": 1,
+    "price": 3850000,
+    "image": "https://picsum.photos/id/9/400/400",
+    "descriptions": "Lựa chọn hoàn hảo cho người yêu bóng rổ.",
+  },
+  {
+    "name": "Jordan Pro",
+    "brands": 1,
+    "price": 3850000,
+    "image": "https://picsum.photos/id/10/400/400",
+    "descriptions": "Lựa chọn hoàn hảo cho người yêu bóng rổ.",
+  },
+  {
+    "name": "Jordan Pro",
+    "brands": 1,
+    "price": 3850000,
+    "image": "https://picsum.photos/id/11/400/400",
+    "descriptions": "Lựa chọn hoàn hảo cho người yêu bóng rổ.",
+  },
+  {
+    "name": "Jordan Pro",
+    "brands": 1,
+    "price": 3850000,
+    "image": "https://picsum.photos/id/12/400/400",
+    "descriptions": "Lựa chọn hoàn hảo cho người yêu bóng rổ.",
+  },
+  {
+    "name": "Jordan Pro",
+    "brands": 1,
+    "price": 3850000,
+    "image": "https://picsum.photos/id/13/400/400",
+    "descriptions": "Lựa chọn hoàn hảo cho người yêu bóng rổ.",
+  },
+];
