@@ -1,6 +1,7 @@
 import 'package:app/common/data.dart';
 import 'package:app/models/product_model.dart';
 import 'package:app/page/search_page.dart';
+import 'package:app/widgets/list_brands_widget.dart';
 import 'package:app/widgets/product_item_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -13,10 +14,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<ProductModel> products = [];
+  List<ProductModel> productByBrand = [];
+
+  int brandSelected = 1;
 
   @override
   void initState() {
     products = shoes.map((element) => ProductModel.fromJson(element)).toList();
+    productByBrand = List.from(products);
 
     super.initState();
   }
@@ -111,111 +116,14 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(40),
-                          color: const Color.fromARGB(255, 83, 158, 251),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ClipOval(
-                                child: Container(
-                                  color: Colors.white,
-                                  width: 25,
-                                  height: 25,
-                                  child: Image.network(
-                                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/100px-Logo_NIKE.svg.png',
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 7),
-                                child: Text(
-                                  'Nike',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipOval(
-                        child: Container(
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          height: 40,
-                          width: 40,
-                          child: Image.network(
-                            'https://rubee.com.vn/admin/webroot/upload/image//images/tin-tuc/puma-logo-3.jpg',
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipOval(
-                        child: Container(
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          height: 40,
-                          width: 40,
-                          child: Image.network(
-                            'https://jordan1.vn/wp-content/uploads/2023/09/under-armour-logo-700x394_da9de84943ae4c90a693b34480ef20df_1024x1024.png',
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipOval(
-                        child: Container(
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          height: 40,
-                          width: 40,
-                          child: Image.network(
-                            'https://inkythuatso.com/uploads/thumbnails/800/2021/09/logo-adidas-vector-inkythuatso-01-29-09-08-58.jpg',
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipOval(
-                        child: Container(
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          height: 40,
-                          width: 40,
-                          child: Image.network(
-                            'https://drake.vn/image/catalog/H%C3%ACnh%20content/logo%20gi%C3%A0y%20Converse/logo-gi%C3%A0y-converse-02.jpg',
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipOval(
-                        child: Container(
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          height: 40,
-                          width: 40,
-                          child: Image.network(
-                            'https://rubee.com.vn/admin/webroot/upload/image//images/tin-tuc/puma-logo-3.jpg',
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              ListBrandsWidget(
+                voidCallback: (id) {
+                  brandSelected = id;
+                  productByBrand = products
+                      .where((element) => element.brandId == brandSelected)
+                      .toList();
+                  setState(() {});
+                },
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -234,19 +142,30 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: SizedBox(
                   height: 500,
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      mainAxisExtent: 250,
-                    ),
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      final item = products[index];
-                      return ProductItemWidget(item: item);
-                    },
-                  ),
+                  child: productByBrand.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.abc),
+                              Text('Không có sản phẩm nào!'),
+                            ],
+                          ),
+                        )
+                      : GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                mainAxisExtent: 250,
+                              ),
+                          itemCount: productByBrand.length,
+                          itemBuilder: (context, index) {
+                            final item = productByBrand[index];
+                            return ProductItemWidget(item: item);
+                          },
+                        ),
                 ),
               ),
             ],

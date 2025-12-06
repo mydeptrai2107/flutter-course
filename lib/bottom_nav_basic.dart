@@ -1,3 +1,4 @@
+import 'package:app/page/favorite_page.dart';
 import 'package:app/page/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class _BottomNavBasicState extends State<BottomNavBasic> {
   int _indexSelected = 0;
   final List<Widget> screens = [
     HomePage(),
-    Center(child: Text('Favorite')),
+    FavoritePage(),
     Center(child: Text('Notification')),
     Center(child: Text('Persion')),
   ];
