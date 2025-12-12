@@ -14,4 +14,30 @@ class LocalStorage {
   static String getString(String key) {
     return prefs.getString(key) ?? '';
   }
+
+  static Future<void> setInt(String key, int value) async {
+    await prefs.setInt(key, value);
+  }
+
+  static int getInt(String key) {
+    return prefs.getInt(key) ?? -1; // a ?? b ?? c
+  }
+
+  static Future<void> setDouble(String key, double value) async {
+    await prefs.setDouble(key, value);
+  }
+
+  static double getDouble(String key) {
+    return prefs.getDouble(key) ?? -1;
+  }
+
+  static Future<void> setListString(String key, List<String> value) async {
+    await prefs.setStringList(key, value);
+  }
+
+  static List<String> getListString(String key) {
+    return prefs.getStringList(key) ?? [];
+  }
+
+  
 }

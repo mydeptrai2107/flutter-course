@@ -1,4 +1,5 @@
 class ProductModel {
+  final int id;
   final int brandId;
   final String name;
   final int price;
@@ -6,6 +7,7 @@ class ProductModel {
   final String description;
 
   const ProductModel({
+    required this.id,
     required this.brandId,
     required this.description,
     required this.images,
@@ -15,6 +17,7 @@ class ProductModel {
 
   static ProductModel fromJson(Map<String, dynamic> json) {
     return ProductModel(
+      id: json['id'],
       brandId: json['brands'],
       description: json['descriptions'],
       images: json['image'],

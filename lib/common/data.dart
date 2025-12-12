@@ -1,5 +1,6 @@
 final List<Map<String, dynamic>> shoes = [
   {
+    "id": 1,
     "name": "Nike Jordan",
     "brands": 1,
     "price": 5850000,
@@ -7,6 +8,7 @@ final List<Map<String, dynamic>> shoes = [
     "descriptions": "Mẫu giày thể thao bán chạy nhất của Nike.",
   },
   {
+    "id": 2,
     "name": "Nike Air Max",
     "brands": 1,
     "price": 9850000,
@@ -14,6 +16,7 @@ final List<Map<String, dynamic>> shoes = [
     "descriptions": "Đế khí êm ái, thoáng và nhẹ.",
   },
   {
+    "id": 3,
     "name": "Jordan Pro",
     "brands": 1,
     "price": 3850000,
@@ -21,6 +24,7 @@ final List<Map<String, dynamic>> shoes = [
     "descriptions": "Lựa chọn hoàn hảo cho người yêu bóng rổ.",
   },
   {
+    "id": 4,
     "name": "Jordan Pro",
     "brands": 1,
     "price": 3850000,
@@ -28,6 +32,7 @@ final List<Map<String, dynamic>> shoes = [
     "descriptions": "Lựa chọn hoàn hảo cho người yêu bóng rổ.",
   },
   {
+    "id": 5,
     "name": "Jordan Pro",
     "brands": 1,
     "price": 3850000,
@@ -35,6 +40,7 @@ final List<Map<String, dynamic>> shoes = [
     "descriptions": "Lựa chọn hoàn hảo cho người yêu bóng rổ.",
   },
   {
+    "id": 6,
     "name": "Jordan Pro",
     "brands": 1,
     "price": 3850000,
@@ -42,6 +48,7 @@ final List<Map<String, dynamic>> shoes = [
     "descriptions": "Lựa chọn hoàn hảo cho người yêu bóng rổ.",
   },
   {
+    "id": 7,
     "name": "Jordan Pro",
     "brands": 1,
     "price": 3850000,
@@ -49,6 +56,7 @@ final List<Map<String, dynamic>> shoes = [
     "descriptions": "Lựa chọn hoàn hảo cho người yêu bóng rổ.",
   },
   {
+    "id": 8,
     "name": "Puma Pro",
     "brands": 2,
     "price": 3850000,

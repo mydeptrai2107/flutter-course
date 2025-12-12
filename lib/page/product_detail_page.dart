@@ -1,4 +1,5 @@
 import 'package:app/models/product_model.dart';
+import 'package:app/services/dialog_services.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailPage extends StatefulWidget {
@@ -47,7 +48,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
               Text(item.name, style: TextStyle(fontSize: 20)),
               Text(
-                item.price.toString() + '  VND',
+                '${item.price} VND',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Text(item.description),
@@ -82,7 +83,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       ),
       bottomNavigationBar: Container(
         height: 60,
-
         decoration: BoxDecoration(
           color: const Color.fromARGB(244, 243, 241, 241),
         ),
@@ -93,16 +93,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: Column(
                 children: [
                   Text('Giá', style: TextStyle(fontSize: 20)),
-                  Text(
-                    item.price.toString() + ' VND',
-                    style: TextStyle(fontSize: 20),
-                  ),
+                  Text('${item.price} VND', style: TextStyle(fontSize: 20)),
                 ],
               ),
             ),
             const Spacer(),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                DialogServices.notificeDialog(
+                  context: context,
+                  isSuccess: false,
+                  content: 'Thêm vào giỏ hàng thành công',
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
               child: Text(
                 'Thêm vào giỏi hàng',
                 style: TextStyle(
@@ -110,7 +114,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
             ),
           ],
         ),
