@@ -1,5 +1,5 @@
-import 'package:app/page/favorite_page.dart';
-import 'package:app/page/home_page.dart';
+import 'package:app/presentation/favorite/favorite_page.dart';
+import 'package:app/presentation/home/home_page.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBasic extends StatefulWidget {

@@ -5,9 +5,14 @@ import 'package:app/storage/local_storage.dart';
 import 'package:flutter/material.dart';
 
 class ProductItemWidget extends StatefulWidget {
-  const ProductItemWidget({super.key, required this.item});
+  const ProductItemWidget({
+    super.key,
+    required this.item,
+    this.onFavoriteChanged,
+  });
 
   final ProductModel item;
+  final VoidCallback? onFavoriteChanged;
 
   @override
   State<ProductItemWidget> createState() => _ProductItemWidgetState();
@@ -19,7 +24,6 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
     final isFavorite = LocalStorage.getListString(
       kListFavorite,
     ).contains(widget.item.id.toString());
-
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -44,25 +48,28 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                 children: [
                   Positioned.fill(child: Image.network(widget.item.images)),
                   Positioned(
-                    top: 0,
-                    right: 0,
+                    top: 10,
+                    right: 10,
                     child: IconButton(
                       padding: EdgeInsets.all(0),
                       onPressed: () async {
-                        List<String> favorites = LocalStorage.getListString(
+                        List<String> favorite = LocalStorage.getListString(
                           kListFavorite,
                         );
-                        if (favorites.contains(widget.item.id.toString())) {
-                          favorites.remove(widget.item.id.toString());
+                        if (favorite.contains(widget.item.id.toString())) {
+                          favorite.remove(widget.item.id.toString());
                         } else {
-                          favorites.add(widget.item.id.toString());
+                          favorite.add(widget.item.id.toString());
                         }
 
                         await LocalStorage.setListString(
                           kListFavorite,
-                          favorites,
+                          favorite,
                         );
                         setState(() {});
+
+                        // Gọi callback để thông báo thay đổi
+                        widget.onFavoriteChanged?.call();
                       },
                       icon: Icon(
                         isFavorite

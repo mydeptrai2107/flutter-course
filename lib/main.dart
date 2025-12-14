@@ -1,3 +1,4 @@
+import 'package:app/bottom_nav_basic.dart';
 import 'package:app/page/login_screens.dart';
 import 'package:app/storage/local_storage.dart';
 import 'package:firebase_core/firebase_core.dart';

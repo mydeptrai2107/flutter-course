@@ -1,3 +1,4 @@
+import 'package:app/repository/auth_repository.dart';
 import 'package:app/services/dialog_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -123,50 +124,12 @@ class _SignUpScreensState extends State<SignUpScreens> {
                       final password = _passwordController.text;
                       final confirm = _confirmController.text;
 
-                      if (email.isEmpty ||
-                          password.isEmpty ||
-                          confirm.isEmpty) {
-                        DialogServices.notificeDialog(
-                          context: context,
-                          isSuccess: false,
-                          content: 'Vui lòng điền đầy đủ thông tin',
-                        );
-                        return;
-                      }
-
-                      if (password != confirm) {
-                        DialogServices.notificeDialog(
-                          context: context,
-                          isSuccess: false,
-                          content: 'Mật khẩu không khớp',
-                        );
-                        return;
-                      }
-
-                      try {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: email,
-                          password: password,
-                        );
-                        await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                              email: email,
-                              password: password,
-                            );
-                        await DialogServices.notificeDialog(
-                          context: context,
-                          isSuccess: true,
-                          content: 'Tạo tài khoản thành công',
-                        );
-                        Navigator.pop(context);
-                      } on FirebaseException catch (e) {
-                        DialogServices.notificeDialog(
-                          context: context,
-                          isSuccess: false,
-                          content:
-                              e.message ?? 'Hệ thống có lỗi. Vui lòng thử lại',
-                        );
-                      }
+                       await  AuthRepository.register(
+                        context: context,
+                        email: email,
+                        password: password,
+                        confirm: confirm
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 132, 251, 193),

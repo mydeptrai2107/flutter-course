@@ -1,8 +1,27 @@
+import 'package:app/bottom_nav_basic.dart';
 import 'package:app/page/sign_up_screens.dart';
+import 'package:app/services/dialog_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreens extends StatelessWidget {
+class LoginScreens extends StatefulWidget {
   const LoginScreens({super.key});
+
+  @override
+  State<LoginScreens> createState() => _LoginScreensState();
+}
+
+class _LoginScreensState extends State<LoginScreens> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +52,7 @@ class LoginScreens extends StatelessWidget {
               child: Text('Email'),
             ),
             TextFormField(
+              controller: _emailController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.email_outlined),
                 hintText: 'email@example.com',
@@ -54,6 +74,7 @@ class LoginScreens extends StatelessWidget {
               child: Text('Mật khẩu'),
             ),
             TextFormField(
+              controller: _passwordController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock_outline),
                 suffixIcon: Icon(Icons.remove_red_eye_outlined),
@@ -92,7 +113,54 @@ class LoginScreens extends StatelessWidget {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final email = _emailController.text.trim();
+                      final password = _passwordController.text.trim();
+
+                      if (email.isEmpty || password.isEmpty) {
+                        DialogServices.notificeDialog(
+                          context: context,
+                          isSuccess: false,
+                          content: "Vui lòng điền đầy đủ email và mật khẩu",
+                        );
+                        return;
+                      }
+                      try {
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: email,
+                          password: password,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BottomNavBasic(),
+                          ),
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        print('❌ Lỗi Firebase: ${e.code} - ${e.message}');
+
+                        String errorMessage = 'Lỗi ';
+                        if (e.code == 'invalid-credential') {
+                          errorMessage = 'Email hoặc mật khẩu không đúng';
+                        } else if (e.code == 'invalid-email') {
+                          errorMessage = 'Email không hợp lệ';
+                        } else if (e.code == 'user-disabled') {
+                          errorMessage = 'Tài khoản đã bị khóa';
+                        }
+
+                        DialogServices.notificeDialog(
+                          context: context,
+                          isSuccess: false,
+                          content: errorMessage,
+                        );
+                      } catch (e) {
+                        DialogServices.notificeDialog(
+                          context: context,
+                          isSuccess: false,
+                          content: 'Lỗi : $e',
+                        );
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(208, 82, 255, 171),
                       shape: RoundedSuperellipseBorder(

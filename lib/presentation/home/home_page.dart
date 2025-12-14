@@ -1,8 +1,9 @@
-import 'package:app/common/data.dart';
+import 'package:app/common/collection_name.dart';
 import 'package:app/models/product_model.dart';
 import 'package:app/page/search_page.dart';
 import 'package:app/widgets/list_brands_widget.dart';
 import 'package:app/widgets/product_item_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,10 +21,23 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    products = shoes.map((element) => ProductModel.fromJson(element)).toList();
-    productByBrand = List.from(products);
-
+    initData();
     super.initState();
+  }
+
+  Future<void> initData() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection(CollectionName.product)
+        .get();
+    // products = snapshot.docs
+    //     .map((e) => ProductModel.fromJson(e.data()))
+    //     .toList();
+    for (final item in snapshot.docs) {
+      final product = ProductModel.fromJson(item.data());
+      products.add(product);
+    }
+    productByBrand = List.from(products);
+    setState(() {});
   }
 
   @override
