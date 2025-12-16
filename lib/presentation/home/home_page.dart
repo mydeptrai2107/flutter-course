@@ -1,9 +1,8 @@
-import 'package:app/common/collection_name.dart';
 import 'package:app/models/product_model.dart';
 import 'package:app/page/search_page.dart';
+import 'package:app/repository/product_repository.dart';
 import 'package:app/widgets/list_brands_widget.dart';
-import 'package:app/widgets/product_item_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app/presentation/home/widgets/product_item_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,16 +25,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> initData() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection(CollectionName.product)
-        .get();
-    // products = snapshot.docs
-    //     .map((e) => ProductModel.fromJson(e.data()))
-    //     .toList();
-    for (final item in snapshot.docs) {
-      final product = ProductModel.fromJson(item.data());
-      products.add(product);
-    }
+    products = await ProductRepository.fetchProduct();
     productByBrand = List.from(products);
     setState(() {});
   }

@@ -1,6 +1,7 @@
 import 'package:app/bottom_nav_basic.dart';
 import 'package:app/page/login_screens.dart';
 import 'package:app/storage/local_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -16,9 +17,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance.currentUser;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreens(),
+      home: auth == null ? LoginScreens() : BottomNavBasic(),
     );
   }
 }

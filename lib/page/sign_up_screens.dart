@@ -1,6 +1,4 @@
 import 'package:app/repository/auth_repository.dart';
-import 'package:app/services/dialog_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreens extends StatefulWidget {
@@ -124,11 +122,11 @@ class _SignUpScreensState extends State<SignUpScreens> {
                       final password = _passwordController.text;
                       final confirm = _confirmController.text;
 
-                       await  AuthRepository.register(
+                      await AuthRepository.register(
                         context: context,
                         email: email,
                         password: password,
-                        confirm: confirm
+                        confirm: confirm,
                       );
                     },
                     style: ElevatedButton.styleFrom(

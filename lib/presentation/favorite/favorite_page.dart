@@ -1,8 +1,8 @@
-import 'package:app/common/constant.dart';
-import 'package:app/common/data.dart';
-import 'package:app/models/product_model.dart';
-import 'package:app/storage/local_storage.dart';
-import 'package:app/widgets/product_item_widget.dart';
+import 'package:app/common/collection_name.dart';
+import 'package:app/repository/favorite_repository.dart';
+import 'package:app/presentation/home/widgets/product_item_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FavoritePage extends StatefulWidget {
@@ -13,78 +13,64 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  List<ProductModel> allProducts = [];
-  List<ProductModel> favoriteProducts = [];
-
-  @override
-  void initState() {
-    super.initState();
-    allProducts = shoes.map((e) => ProductModel.fromJson(e)).toList();
-    _loadFavorites();
-  }
-
-  void _loadFavorites() {
-    List<String> favoriteIds = LocalStorage.getListString(kListFavorite);
-    favoriteProducts = allProducts
-        .where((product) => favoriteIds.contains(product.id.toString()))
-        .toList();
-    setState(() {});
-  }
+  final user = FirebaseAuth.instance.currentUser;
+  final collectUser = FirebaseFirestore.instance.collection(
+    CollectionName.users,
+  );
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Yêu thích'),
-        centerTitle: true,
-      ),
-      body: favoriteProducts.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.favorite_border,
-                    size: 64,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Chưa có sản phẩm yêu thích',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : RefreshIndicator(
-              onRefresh: () async {
-                _loadFavorites();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    mainAxisExtent: 250,
-                  ),
-                  itemCount: favoriteProducts.length,
-                  itemBuilder: (context, index) {
-                    final item = favoriteProducts[index];
-                    return ProductItemWidget(
-                      item: item,
-                      onFavoriteChanged: () {
-                        _loadFavorites();
+    return StreamBuilder(
+      stream: collectUser
+          .doc(user?.uid)
+          .collection(CollectionName.favorite)
+          .snapshots(),
+      builder: (context, snapshot) {
+        List<String> ids = [];
+        for (final item in snapshot.data?.docs ?? []) {
+          ids.add(item.id);
+        }
+        return FutureBuilder(
+          future: FavoriteRepository.getProductsByIds(ids),
+          builder: (context, dataFuture) {
+            return Scaffold(
+              appBar: AppBar(title: Text('Yêu thích'), centerTitle: true),
+              body: dataFuture.data?.isEmpty ?? false
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.favorite_border,
+                            size: 64,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            'Chưa có sản phẩm yêu thích',
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    )
+                  : GridView.builder(
+                      padding: const EdgeInsets.all(20),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        mainAxisExtent: 250,
+                      ),
+                      itemCount: dataFuture.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final item = dataFuture.data![index];
+                        return ProductItemWidget(item: item);
                       },
-                    );
-                  },
-                ),
-              ),
-            ),
+                    ),
+            );
+          },
+        );
+      },
     );
   }
 }

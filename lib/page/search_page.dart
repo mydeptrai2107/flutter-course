@@ -1,6 +1,6 @@
 import 'package:app/common/data.dart';
 import 'package:app/models/product_model.dart';
-import 'package:app/widgets/product_item_widget.dart';
+import 'package:app/presentation/home/widgets/product_item_widget.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
