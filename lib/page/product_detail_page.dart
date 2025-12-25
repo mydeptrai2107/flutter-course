@@ -1,5 +1,6 @@
+import 'package:app/common/constant.dart';
 import 'package:app/models/product_model.dart';
-import 'package:app/services/dialog_services.dart';
+import 'package:app/repository/cart_repository.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailPage extends StatefulWidget {
@@ -17,7 +18,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   List<int> sizes = [38, 39, 40, 41, 42, 43];
   int sizeSelectIndex = 0;
 
-  List<Color> colors = [Colors.blue, Colors.red, Colors.yellow];
   int colorSelectIndex = 0;
 
   @override
@@ -99,11 +99,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ),
             const Spacer(),
             ElevatedButton(
-              onPressed: () {
-                DialogServices.notificeDialog(
+              onPressed: () async {
+                await CartRepository.addCart(
                   context: context,
-                  isSuccess: false,
-                  content: 'Thêm vào giỏ hàng thành công',
+                  productId: widget.product.id,
+                  size: sizes[sizeSelectIndex],
+                  color: colorSelectIndex,
                 );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
