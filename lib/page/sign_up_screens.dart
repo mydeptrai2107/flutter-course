@@ -9,13 +9,17 @@ class SignUpScreens extends StatefulWidget {
 }
 
 class _SignUpScreensState extends State<SignUpScreens> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
     super.dispose();
@@ -36,166 +40,221 @@ class _SignUpScreensState extends State<SignUpScreens> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Text('Email'),
-            ),
-            TextFormField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                hintText: 'email@example.com',
-                prefixIcon: Icon(Icons.email_outlined),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.greenAccent),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.black),
-                ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text('Tên người dùng'),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10, top: 20),
-              child: Text('Mật khẩu'),
-            ),
-            TextFormField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                hintText: '**********',
-                prefixIcon: Icon(Icons.lock_outlined),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.greenAccent),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.black),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 10),
-              child: Text('Xác nhận mật khẩu'),
-            ),
-            TextFormField(
-              controller: _confirmController,
-              decoration: InputDecoration(
-                hintText: '**********',
-                prefixIcon: Icon(Icons.lock_open_outlined),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.greenAccent),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.black),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    style: TextStyle(color: Colors.greenAccent),
-                    'Quên mật khẩu?',
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  hintText: 'Nhập tên của bạn',
+                  prefixIcon: Icon(Icons.person_outlined),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: 1, color: Colors.greenAccent),
                   ),
-                ],
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final email = _emailController.text;
-                      final password = _passwordController.text;
-                      final confirm = _confirmController.text;
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10, top: 20),
+                child: Text('Email'),
+              ),
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  hintText: 'email@example.com',
+                  prefixIcon: Icon(Icons.email_outlined),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: 1, color: Colors.greenAccent),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10, top: 20),
+                child: Text('Số điện thoại'),
+              ),
+              TextFormField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  hintText: '0123456789',
+                  prefixIcon: Icon(Icons.phone_outlined),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: 1, color: Colors.greenAccent),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10, top: 20),
+                child: Text('Mật khẩu'),
+              ),
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  hintText: '**********',
+                  prefixIcon: Icon(Icons.lock_outlined),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: 1, color: Colors.greenAccent),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 10),
+                child: Text('Xác nhận mật khẩu'),
+              ),
+              TextFormField(
+                controller: _confirmController,
+                decoration: InputDecoration(
+                  hintText: '**********',
+                  prefixIcon: Icon(Icons.lock_open_outlined),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: 1, color: Colors.greenAccent),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      style: TextStyle(color: Colors.greenAccent),
+                      'Quên mật khẩu?',
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final name = _nameController.text;
+                        final email = _emailController.text;
+                        final phone = _phoneController.text;
+                        final password = _passwordController.text;
+                        final confirm = _confirmController.text;
 
-                      await AuthRepository.register(
-                        context: context,
-                        email: email,
-                        password: password,
-                        confirm: confirm,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 132, 251, 193),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(15),
-                        side: BorderSide(width: 1, color: Colors.greenAccent),
-                      ),
-                    ),
-                    child: Text(
-                      style: TextStyle(color: Colors.black),
-                      'Đăng ký',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(child: Divider()),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                      'hoặc',
-                    ),
-                  ),
-                  Expanded(child: Divider()),
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(15),
-                        side: BorderSide(
-                          width: 1,
-                          color: const Color.fromARGB(255, 0, 0, 0),
+                        await AuthRepository.register(
+                          context: context,
+                          name: name,
+                          email: email,
+                          phone: phone,
+                          password: password,
+                          confirm: confirm,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          132,
+                          251,
+                          193,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(15),
+                          side: BorderSide(width: 1, color: Colors.greenAccent),
                         ),
                       ),
-                    ),
-                    child: Text(
-                      style: TextStyle(color: Colors.black),
-                      'Đăng nhập với Google',
+                      child: Text(
+                        style: TextStyle(color: Colors.black),
+                        'Đăng ký',
+                      ),
                     ),
                   ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(child: Divider()),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                        'hoặc',
+                      ),
+                    ),
+                    Expanded(child: Divider()),
+                  ],
                 ),
-              ],
-            ),
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(style: TextStyle(fontSize: 12), 'Đã có tài khoản?'),
-                Text(
-                  style: TextStyle(fontSize: 12, color: Colors.greenAccent),
-                  'Đăng nhập',
-                ),
-              ],
-            ),
-          ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          255,
+                          255,
+                          255,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(15),
+                          side: BorderSide(
+                            width: 1,
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        style: TextStyle(color: Colors.black),
+                        'Đăng nhập với Google',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(style: TextStyle(fontSize: 12), 'Đã có tài khoản?'),
+                  Text(
+                    style: TextStyle(fontSize: 12, color: Colors.greenAccent),
+                    'Đăng nhập',
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

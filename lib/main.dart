@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     final auth = FirebaseAuth.instance.currentUser;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: auth == null ? LoginScreens() : BottomNavBasic(),
+      home: LoginScreens() ,
     );
   }
 }

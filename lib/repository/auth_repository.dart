@@ -7,11 +7,17 @@ import 'package:flutter/material.dart';
 class AuthRepository {
   static Future<void> register({
     required BuildContext context,
+    required String name,
     required String email,
+    required String phone,
     required String password,
     required String confirm,
   }) async {
-    if (email.isEmpty || password.isEmpty || confirm.isEmpty) {
+    if (name.isEmpty ||
+        email.isEmpty ||
+        phone.isEmpty ||
+        password.isEmpty ||
+        confirm.isEmpty) {
       DialogServices.notificeDialog(
         context: context,
         isSuccess: false,
@@ -37,9 +43,10 @@ class AuthRepository {
             .collection(CollectionName.users)
             .doc(uid)
             .set({
-              "name": userCredential.user?.displayName,
+              "name": name,
               "avatar": userCredential.user?.photoURL,
-              "email": userCredential.user?.email,
+              "email": email,
+              "phone": phone,
             });
       }
       await DialogServices.notificeDialog(

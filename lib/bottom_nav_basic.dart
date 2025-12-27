@@ -1,5 +1,6 @@
 import 'package:app/presentation/favorite/favorite_page.dart';
 import 'package:app/presentation/home/home_page.dart';
+import 'package:app/presentation/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBasic extends StatefulWidget {
@@ -15,7 +16,7 @@ class _BottomNavBasicState extends State<BottomNavBasic> {
     HomePage(),
     FavoritePage(),
     Center(child: Text('Notification')),
-    Center(child: Text('Persion')),
+    ProfilePage(),
   ];
   @override
   Widget build(BuildContext context) {
