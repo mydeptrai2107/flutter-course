@@ -9,12 +9,18 @@ class AuthRepository {
 
   static Future<void> register({
     required BuildContext context,
+    required String name,
     required String email,
+    required String phone,
     required String password,
     required String confirm,
   }) async {
-    if (email.isEmpty || password.isEmpty || confirm.isEmpty) {
-      DialogSevices.notificeDialog(
+    if (name.isEmpty ||
+        email.isEmpty ||
+        phone.isEmpty ||
+        password.isEmpty ||
+        confirm.isEmpty) {
+      DialogServices.notificeDialog(
         context: context,
         isSuccess: false,
         content: 'Vui lòng điền đầy đủ thông tin',
@@ -39,9 +45,10 @@ class AuthRepository {
             .collection(CollectionName.user)
             .doc(uid)
             .set({
-              "name": userCredential.user?.displayName,
+              "name": name,
               "avatar": userCredential.user?.photoURL,
-              "email": userCredential.user?.email,
+              "email": email,
+              "phone": phone,
             });
       }
 
