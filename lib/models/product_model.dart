@@ -1,11 +1,13 @@
 class ProductModel {
+  String id;
   final int brandId;
   final String name;
   final int price;
   final String images;
   final String description;
 
-  const ProductModel({
+  ProductModel({
+    required this.id,
     required this.brandId,
     required this.description,
     required this.images,
@@ -15,6 +17,7 @@ class ProductModel {
 
   static ProductModel fromJson(Map<String, dynamic> json) {
     return ProductModel(
+      id: json['id'].toString(),
       brandId: json['brands'],
       description: json['descriptions'],
       images: json['image'],

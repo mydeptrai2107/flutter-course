@@ -1,6 +1,6 @@
 import 'package:app/common/data.dart';
 import 'package:app/models/product_model.dart';
-import 'package:app/widgets/product_item_widget.dart';
+import 'package:app/presentation/home/widget/product_item_widget.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
@@ -32,9 +32,9 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Tìm kiếm sản phẩm')),
+      appBar: AppBar(title: const Text('Tìm kiếm sản phẩm')),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           spacing: 20,
           children: [
@@ -52,23 +52,23 @@ class _SearchPageState extends State<SearchPage> {
               controller: _controller,
               decoration: InputDecoration(
                 hintText: 'Tìm kiếm giày',
-                prefixIcon: Icon(Icons.search_outlined),
+                prefixIcon: const Icon(Icons.search_outlined),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.black),
+                  borderSide: const BorderSide(width: 1, color: Colors.black),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     width: 1,
-                    color: const Color.fromARGB(255, 83, 158, 251),
+                    color: Color.fromARGB(255, 83, 158, 251),
                   ),
                 ),
               ),
             ),
             Expanded(
               child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,

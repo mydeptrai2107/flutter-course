@@ -1,4 +1,6 @@
-import 'package:app/page/home_page.dart';
+import 'package:app/presentation/cart/cart_page.dart';
+import 'package:app/presentation/favorite/favorite_page.dart';
+import 'package:app/presentation/home/home_page.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBasic extends StatefulWidget {
@@ -11,10 +13,11 @@ class BottomNavBasic extends StatefulWidget {
 class _BottomNavBasicState extends State<BottomNavBasic> {
   int _indexSelected = 0;
   final List<Widget> screens = [
-    HomePage(),
-    Center(child: Text('Favorite')),
-    Center(child: Text('Notification')),
-    Center(child: Text('Persion')),
+    const HomePage(),
+    const FavoritePage(),
+    const CartPage(),
+    const Center(child: Text('Notification')),
+    const Center(child: Text('Persion')),
   ];
   @override
   Widget build(BuildContext context) {
@@ -23,19 +26,24 @@ class _BottomNavBasicState extends State<BottomNavBasic> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _indexSelected,
         onTap: (value) {
+          print(value);
           _indexSelected = value;
           setState(() {});
         },
-        selectedIconTheme: IconThemeData(color: Colors.blue),
-        unselectedIconTheme: IconThemeData(color: Colors.grey),
+        selectedIconTheme: const IconThemeData(color: Colors.blue),
+        unselectedIconTheme: const IconThemeData(color: Colors.grey),
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Favorite',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_basket),
+            label: 'Cart',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),

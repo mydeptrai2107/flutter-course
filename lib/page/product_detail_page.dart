@@ -1,4 +1,7 @@
+import 'package:app/common/constant.dart';
 import 'package:app/models/product_model.dart';
+import 'package:app/repository/cart_repository.dart';
+import 'package:app/sevices/dialog_sevices.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailPage extends StatefulWidget {
@@ -16,7 +19,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   List<int> sizes = [38, 39, 40, 41, 42, 43];
   int sizeSelectIndex = 0;
 
-  List<Color> colors = [Colors.blue, Colors.red, Colors.yellow];
+  
   int colorSelectIndex = 0;
 
   @override
@@ -41,18 +44,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   children: [Flexible(child: Image.network(item.images))],
                 ),
               ),
-              Text(
+              const Text(
                 'BÁN CHẠY',
                 style: TextStyle(color: Colors.blue, fontSize: 12),
               ),
-              Text(item.name, style: TextStyle(fontSize: 20)),
+              Text(item.name, style: const TextStyle(fontSize: 20)),
               Text(
-                item.price.toString() + '  VND',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                '${item.price}  VND',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(item.description),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: Text('Màu Sắc', style: TextStyle(fontSize: 20)),
               ),
               Padding(
@@ -65,7 +71,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ],
                 ),
               ),
-              Text('Kích thước', style: TextStyle(fontSize: 20)),
+              const Text('Kích thước', style: TextStyle(fontSize: 20)),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -83,8 +89,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       bottomNavigationBar: Container(
         height: 60,
 
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(244, 243, 241, 241),
+        decoration: const BoxDecoration(
+          color: Color.fromARGB(244, 243, 241, 241),
         ),
         child: Row(
           children: [
@@ -92,25 +98,32 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
-                  Text('Giá', style: TextStyle(fontSize: 20)),
+                  const Text('Giá', style: TextStyle(fontSize: 20)),
                   Text(
-                    item.price.toString() + ' VND',
-                    style: TextStyle(fontSize: 20),
+                    '${item.price} VND',
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ],
               ),
             ),
             const Spacer(),
             ElevatedButton(
-              onPressed: () {},
-              child: Text(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+              onPressed: () async {
+                await CartRepository.addCart(
+                  context: context,
+                  productId: widget.product.id,
+                  size: sizes[sizeSelectIndex],
+                  color: colorSelectIndex,
+                );
+              },
+              child: const Text(
                 'Thêm vào giỏi hàng',
                 style: TextStyle(
-                  color: const Color.fromARGB(255, 245, 242, 242),
+                  color: Color.fromARGB(255, 245, 242, 242),
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
             ),
           ],
         ),
@@ -126,7 +139,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         setState(() {});
       },
       child: Container(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: isChoose ? Colors.blue : Colors.white,
