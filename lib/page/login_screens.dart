@@ -1,7 +1,9 @@
 import 'package:app/bottom_nav_basic.dart';
+import 'package:app/presentation/home/home_page.dart';
 import 'package:app/page/sign_up_screens.dart';
-import 'package:app/services/dialog_services.dart';
+import 'package:app/sevices/dialog_sevices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreens extends StatefulWidget {
@@ -14,12 +16,11 @@ class LoginScreens extends StatefulWidget {
 class _LoginScreensState extends State<LoginScreens> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-
+    // TODO: implement dispose
     super.dispose();
   }
 
@@ -28,7 +29,7 @@ class _LoginScreensState extends State<LoginScreens> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Column(
+        title: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -42,58 +43,58 @@ class _LoginScreensState extends State<LoginScreens> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 30),
+        padding: const EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 10),
               child: Text('Email'),
             ),
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.email_outlined),
+                prefixIcon: const Icon(Icons.email_outlined),
                 hintText: 'email@example.com',
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     width: 1,
                     color: Colors.lightGreenAccent,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.black),
+                  borderSide: const BorderSide(width: 1, color: Colors.black),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 10),
+            const Padding(
+              padding: EdgeInsets.only(top: 20, bottom: 10),
               child: Text('Mật khẩu'),
             ),
             TextFormField(
               controller: _passwordController,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.lock_outline),
-                suffixIcon: Icon(Icons.remove_red_eye_outlined),
+                prefixIcon: const Icon(Icons.lock_outline),
+                suffixIcon: const Icon(Icons.remove_red_eye_outlined),
                 hintText: '**********',
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     width: 1,
                     color: Colors.lightGreenAccent,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.black),
+                  borderSide: const BorderSide(width: 1, color: Colors.black),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15, bottom: 45),
+            const Padding(
+              padding: EdgeInsets.only(top: 15, bottom: 45),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -114,14 +115,13 @@ class _LoginScreensState extends State<LoginScreens> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      final email = _emailController.text.trim();
-                      final password = _passwordController.text.trim();
-
+                      final email = _emailController.text;
+                      final password = _passwordController.text;
                       if (email.isEmpty || password.isEmpty) {
-                        DialogServices.notificeDialog(
+                        DialogSevices.notificeDialog(
                           context: context,
                           isSuccess: false,
-                          content: "Vui lòng điền đầy đủ email và mật khẩu",
+                          content: 'Vui lòng điền đầy đủ thông tin',
                         );
                         return;
                       }
@@ -130,34 +130,20 @@ class _LoginScreensState extends State<LoginScreens> {
                           email: email,
                           password: password,
                         );
+                        await DialogSevices.notificeDialog(
+                          context: context,
+                          isSuccess: true,
+                          content: 'Đăng nhập thành công',
+                        );
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => BottomNavBasic(),
-                          ),
+                          MaterialPageRoute(builder: (context) => const BottomNavBasic()),
                         );
                       } on FirebaseAuthException catch (e) {
-                        print('❌ Lỗi Firebase: ${e.code} - ${e.message}');
-
-                        String errorMessage = 'Lỗi ';
-                        if (e.code == 'invalid-credential') {
-                          errorMessage = 'Email hoặc mật khẩu không đúng';
-                        } else if (e.code == 'invalid-email') {
-                          errorMessage = 'Email không hợp lệ';
-                        } else if (e.code == 'user-disabled') {
-                          errorMessage = 'Tài khoản đã bị khóa';
-                        }
-
-                        DialogServices.notificeDialog(
+                        DialogSevices.notificeDialog(
                           context: context,
                           isSuccess: false,
-                          content: errorMessage,
-                        );
-                      } catch (e) {
-                        DialogServices.notificeDialog(
-                          context: context,
-                          isSuccess: false,
-                          content: 'Lỗi : $e',
+                          content: e.message ?? 'Hệ thống lỗi',
                         );
                       }
                     },
@@ -168,7 +154,7 @@ class _LoginScreensState extends State<LoginScreens> {
                         side: BorderSide.none,
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       style: TextStyle(color: Colors.black),
                       'Đăng nhập',
                     ),
@@ -176,13 +162,13 @@ class _LoginScreensState extends State<LoginScreens> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(10),
+            const Padding(
+              padding: EdgeInsets.all(10),
               child: Row(
                 children: [
                   Expanded(child: Divider()),
                   Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding: EdgeInsets.all(10),
                     child: Text(
                       style: TextStyle(fontSize: 12, color: Colors.grey),
                       'hoặc',
@@ -200,10 +186,10 @@ class _LoginScreensState extends State<LoginScreens> {
                     style: ElevatedButton.styleFrom(
                       shape: RoundedSuperellipseBorder(
                         borderRadius: BorderRadiusGeometry.circular(15),
-                        side: BorderSide(width: 1, color: Colors.black),
+                        side: const BorderSide(width: 1, color: Colors.black),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       style: TextStyle(color: Colors.black),
                       'Đặng nhập với Google',
                     ),
@@ -216,21 +202,21 @@ class _LoginScreensState extends State<LoginScreens> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Chưa có tài khoản?'),
-                  SizedBox(width: 10),
+                  const Text('Chưa có tài khoản?'),
+                  const SizedBox(width: 10),
                   InkWell(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SignUpScreens(),
+                          builder: (context) => const SignUpScreens(),
                         ),
                       );
                     },
-                    child: Text(
+                    child: const Text(
                       style: TextStyle(
                         fontSize: 16,
-                        color: const Color.fromARGB(255, 124, 255, 192),
+                        color: Color.fromARGB(255, 124, 255, 192),
                       ),
                       'Đăng ký ngay',
                     ),

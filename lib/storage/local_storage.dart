@@ -15,12 +15,12 @@ class LocalStorage {
     return prefs.getString(key) ?? '';
   }
 
-  static Future<void> setInt(String key, int value) async {
-    await prefs.setInt(key, value);
+  static Future<void> setInt(String key, String value) async {
+    await prefs.setString(key, value);
   }
 
   static int getInt(String key) {
-    return prefs.getInt(key) ?? -1; // a ?? b ?? c
+    return prefs.getInt(key) ?? -1;
   }
 
   static Future<void> setDouble(String key, double value) async {
@@ -31,13 +31,11 @@ class LocalStorage {
     return prefs.getDouble(key) ?? -1;
   }
 
-  static Future<void> setListString(String key, List<String> value) async {
+  static Future<void> setStringList(String key, List<String> value) async {
     await prefs.setStringList(key, value);
   }
 
-  static List<String> getListString(String key) {
+  static List<String> getStringList(String key) {
     return prefs.getStringList(key) ?? [];
   }
-
-  
 }

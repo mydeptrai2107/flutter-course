@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 
-class DialogServices {
+class DialogSevices {
   static notificeDialog({
     required BuildContext context,
     required bool isSuccess,
     required String content,
   }) async {
     showDialog(
-      barrierColor: Colors.transparent,
+      barrierColor: Colors.transparent, // bỏ nền xám của dialog
       context: context,
       builder: (context) {
         return Dialog(
-          backgroundColor: Colors.transparent,
           alignment: Alignment.topCenter,
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
               color: isSuccess ? Colors.green : Colors.red,
@@ -24,14 +23,14 @@ class DialogServices {
               children: [
                 Text(
                   isSuccess ? 'Thành công' : 'Thất bại',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   content,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -42,9 +41,7 @@ class DialogServices {
         );
       },
     );
-
-    await Future.delayed(Duration(milliseconds: 1500));
-
+    await Future.delayed(const Duration(milliseconds: 500));
     if (context.mounted) {
       Navigator.pop(context);
     }

@@ -17,7 +17,7 @@ class ProductModel {
 
   static ProductModel fromJson(Map<String, dynamic> json) {
     return ProductModel(
-      id: (json['id']).toString(),
+      id: json['id'].toString(),
       brandId: json['brands'],
       description: json['descriptions'],
       images: json['image'],

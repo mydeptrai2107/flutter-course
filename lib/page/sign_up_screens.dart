@@ -1,4 +1,6 @@
 import 'package:app/repository/auth_repository.dart';
+import 'package:app/sevices/dialog_sevices.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreens extends StatefulWidget {
@@ -13,11 +15,14 @@ class _SignUpScreensState extends State<SignUpScreens> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
 
+  get DialogServices => null;
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
+    // TODO: implement dispose
     super.dispose();
   }
 
@@ -26,7 +31,7 @@ class _SignUpScreensState extends State<SignUpScreens> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Column(
+        title: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -42,65 +47,65 @@ class _SignUpScreensState extends State<SignUpScreens> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 10),
               child: Text('Email'),
             ),
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
                 hintText: 'email@example.com',
-                prefixIcon: Icon(Icons.email_outlined),
+                prefixIcon: const Icon(Icons.email_outlined),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.greenAccent),
+                  borderSide: const BorderSide(width: 1, color: Colors.greenAccent),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.black),
+                  borderSide: const BorderSide(width: 1, color: Colors.black),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10, top: 20),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 10, top: 20),
               child: Text('Mật khẩu'),
             ),
             TextFormField(
               controller: _passwordController,
               decoration: InputDecoration(
                 hintText: '**********',
-                prefixIcon: Icon(Icons.lock_outlined),
+                prefixIcon: const Icon(Icons.lock_outlined),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.greenAccent),
+                  borderSide: const BorderSide(width: 1, color: Colors.greenAccent),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.black),
+                  borderSide: const BorderSide(width: 1, color: Colors.black),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 10),
+            const Padding(
+              padding: EdgeInsets.only(top: 20, bottom: 10),
               child: Text('Xác nhận mật khẩu'),
             ),
             TextFormField(
               controller: _confirmController,
               decoration: InputDecoration(
                 hintText: '**********',
-                prefixIcon: Icon(Icons.lock_open_outlined),
+                prefixIcon: const Icon(Icons.lock_open_outlined),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.greenAccent),
+                  borderSide: const BorderSide(width: 1, color: Colors.greenAccent),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(width: 1, color: Colors.black),
+                  borderSide: const BorderSide(width: 1, color: Colors.black),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 10),
+            const Padding(
+              padding: EdgeInsets.only(top: 20, bottom: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,7 +117,7 @@ class _SignUpScreensState extends State<SignUpScreens> {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
@@ -128,15 +133,34 @@ class _SignUpScreensState extends State<SignUpScreens> {
                         password: password,
                         confirm: confirm,
                       );
+
+                      try {
+                        await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                              email: email,
+                              password: password,
+                            );
+                        DialogSevices.notificeDialog(
+                          context: context,
+                          isSuccess: true,
+                          content: 'Đăng kys thành công',
+                        );
+                        await DialogServices.notificeDialog(
+                          context: context,
+                          isSuccess: true,
+                          content: 'Tạo tài khoản thành công',
+                        );
+                        Navigator.pop(context);
+                      } on FirebaseException catch (e) {
+                        DialogServices.notificeDialog(
+                          context: context,
+                          isSuccess: false,
+                          content:
+                              e.message ?? 'Hệ thống có lỗi. Vui lòng thử lại',
+                        );
+                      }
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 132, 251, 193),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(15),
-                        side: BorderSide(width: 1, color: Colors.greenAccent),
-                      ),
-                    ),
-                    child: Text(
+                    child: const Text(
                       style: TextStyle(color: Colors.black),
                       'Đăng ký',
                     ),
@@ -144,13 +168,13 @@ class _SignUpScreensState extends State<SignUpScreens> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Expanded(child: Divider()),
                   Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding: EdgeInsets.all(10),
                     child: Text(
                       style: TextStyle(fontSize: 12, color: Colors.grey),
                       'hoặc',
@@ -169,13 +193,13 @@ class _SignUpScreensState extends State<SignUpScreens> {
                       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadiusGeometry.circular(15),
-                        side: BorderSide(
+                        side: const BorderSide(
                           width: 1,
-                          color: const Color.fromARGB(255, 0, 0, 0),
+                          color: Color.fromARGB(255, 0, 0, 0),
                         ),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       style: TextStyle(color: Colors.black),
                       'Đăng nhập với Google',
                     ),
@@ -183,8 +207,8 @@ class _SignUpScreensState extends State<SignUpScreens> {
                 ),
               ],
             ),
-            SizedBox(height: 30),
-            Row(
+            const SizedBox(height: 30),
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
