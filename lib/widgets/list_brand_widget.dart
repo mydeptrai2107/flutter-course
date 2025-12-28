@@ -1,34 +1,48 @@
 import 'package:app/common/constant.dart';
 import 'package:app/common/data.dart';
 import 'package:app/models/brand_model.dart';
+import 'package:app/repository/brand_repository.dart';
 import 'package:app/storage/local_storage.dart';
 import 'package:flutter/material.dart';
 
-class ListBrandsWidget extends StatefulWidget {
-  const ListBrandsWidget({super.key, required this.voidCallback});
+class ListBrandWidget extends StatefulWidget {
+  const ListBrandWidget({super.key, required this.voidCallback});
 
   final void Function(int id) voidCallback;
-
   @override
-  State<ListBrandsWidget> createState() => _ListBrandsWidgetState();
+  State<ListBrandWidget> createState() => _ListBrandWidgetState();
 }
 
-class _ListBrandsWidgetState extends State<ListBrandsWidget> {
+class _ListBrandWidgetState extends State<ListBrandWidget> {
   List<BrandModel> brands = [];
+bool isLoading = true;
   int brandSelected = 1;
 
   @override
   void initState() {
-    brands = brandData.map((e) {
-      return BrandModel.fromJson(e);
-    }).toList();
+    
+    // TODO: implement initState
     super.initState();
+    _loadBrands();
   }
+Future<void> _loadBrands() async{
+  final data = await BrandRepository.getBrands();
+  setState(() {
+    brands = data;
+    isLoading = false;
+  });
 
+}
   @override
   Widget build(BuildContext context) {
+    if(isLoading){
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        child: const Center(child: CircularProgressIndicator(),),
+      );
+    }
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 10),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
@@ -64,7 +78,7 @@ class _ListBrandsWidgetState extends State<ListBrandsWidget> {
               ),
             ),
             if (brand.id == brandSelected)
-              Text(brand.name, style: TextStyle(color: Colors.white)),
+              Text(brand.name, style: const TextStyle(color: Colors.white)),
           ],
         ),
       ),

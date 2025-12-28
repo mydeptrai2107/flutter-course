@@ -1,6 +1,6 @@
 import 'package:app/common/collection_name.dart';
-import 'package:app/repository/favorite_repository.dart';
-import 'package:app/presentation/home/widgets/product_item_widget.dart';
+import 'package:app/repository/favorite_reposity.dart';
+import 'package:app/presentation/home/widget/product_item_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ class FavoritePage extends StatefulWidget {
 class _FavoritePageState extends State<FavoritePage> {
   final user = FirebaseAuth.instance.currentUser;
   final collectUser = FirebaseFirestore.instance.collection(
-    CollectionName.users,
+    CollectionName.user,
   );
 
   @override
@@ -30,13 +30,14 @@ class _FavoritePageState extends State<FavoritePage> {
         for (final item in snapshot.data?.docs ?? []) {
           ids.add(item.id);
         }
+
         return FutureBuilder(
-          future: FavoriteRepository.getProductsByIds(ids),
-          builder: (context, dataFuture) {
+          future: FavoriteReposity.getProductsByIds(ids),
+          builder: (context, dataFure) {
             return Scaffold(
-              appBar: AppBar(title: Text('Yêu thích'), centerTitle: true),
-              body: dataFuture.data?.isEmpty ?? false
-                  ? Center(
+              appBar: AppBar(title: const Text('Yêu thích'), centerTitle: true),
+              body: dataFure.data?.isEmpty ?? false
+                  ? const Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -53,19 +54,25 @@ class _FavoritePageState extends State<FavoritePage> {
                         ],
                       ),
                     )
-                  : GridView.builder(
-                      padding: const EdgeInsets.all(20),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        mainAxisExtent: 250,
+                  : RefreshIndicator(
+                      onRefresh: () async {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                mainAxisExtent: 250,
+                              ),
+                          itemCount: dataFure.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final item = dataFure.data![index];
+                            return ProductItemWidget(item: item);
+                          },
+                        ),
                       ),
-                      itemCount: dataFuture.data?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final item = dataFuture.data![index];
-                        return ProductItemWidget(item: item);
-                      },
                     ),
             );
           },

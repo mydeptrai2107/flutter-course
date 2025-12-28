@@ -1,7 +1,9 @@
 import 'package:app/common/collection_name.dart';
+import 'package:app/common/constant.dart';
 import 'package:app/models/product_model.dart';
 import 'package:app/page/product_detail_page.dart';
-import 'package:app/repository/favorite_repository.dart';
+import 'package:app/repository/favorite_reposity.dart';
+import 'package:app/storage/local_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +12,11 @@ class ProductItemWidget extends StatefulWidget {
   const ProductItemWidget({
     super.key,
     required this.item,
+    
   });
 
   final ProductModel item;
+  
 
   @override
   State<ProductItemWidget> createState() => _ProductItemWidgetState();
@@ -21,7 +25,7 @@ class ProductItemWidget extends StatefulWidget {
 class _ProductItemWidgetState extends State<ProductItemWidget> {
   final user = FirebaseAuth.instance.currentUser;
   final collectUser = FirebaseFirestore.instance.collection(
-    CollectionName.users,
+    CollectionName.user,
   );
 
   @override
@@ -32,18 +36,17 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
           .collection(CollectionName.favorite)
           .snapshots(),
       builder: (context, snapshot) {
-        // final isFavorite =
-        //     snapshot.data?.docs
-        //         .map((e) => e.id)
-        //         .toList()
-        //         .contains(widget.item.id) ??
-        //     false;
-        List<String> ids = [];
-        for (final item in snapshot.data?.docs ?? []) {
-          ids.add(item.id);
-        }
-        final isFavorite = ids.contains(widget.item.id);
-
+        final isFavorite =
+            snapshot.data?.docs
+                .map((e) => e.id)
+                .toList()
+                .contains(widget.item.id) ??
+            false;
+        // List<String> ids = [];
+        // for(final item in snapshot.data?.docs ?? []){
+        //   ids.add(item.id);
+        // }
+        // final isFavrite = ids.contains(widget.item.id);
         return InkWell(
           onTap: () {
             Navigator.push(
@@ -71,9 +74,9 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                         top: 10,
                         right: 10,
                         child: IconButton(
-                          padding: EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
                           onPressed: () async {
-                            await FavoriteRepository.addProductToFavorite(
+                            await FavoriteReposity.addProductToFavorite(
                               widget.item.id,
                             );
                           },
@@ -89,12 +92,12 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                     ],
                   ),
                 ),
-                Text('BÁN CHẠY', style: TextStyle(color: Colors.blue)),
+                const Text('BÁN CHẠY', style: TextStyle(color: Colors.blue)),
                 Text(widget.item.name),
                 Text(
                   '${widget.item.price} đ',
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 253, 142, 24),
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 253, 142, 24),
                   ),
                 ),
               ],

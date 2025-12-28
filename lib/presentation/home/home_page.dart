@@ -1,8 +1,13 @@
+import 'package:app/common/collection_name.dart';
+import 'package:app/common/data.dart';
 import 'package:app/models/product_model.dart';
+import 'package:app/page/product_list_brand_page.dart';
 import 'package:app/page/search_page.dart';
 import 'package:app/repository/product_repository.dart';
-import 'package:app/widgets/list_brands_widget.dart';
-import 'package:app/presentation/home/widgets/product_item_widget.dart';
+import 'package:app/widgets/list_brand_widget.dart';
+import 'package:app/presentation/home/widget/product_item_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,9 +20,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<ProductModel> products = [];
   List<ProductModel> productByBrand = [];
-
   int brandSelected = 1;
-
+  String brandName = 'Nike';
   @override
   void initState() {
     initData();
@@ -28,6 +32,23 @@ class _HomePageState extends State<HomePage> {
     products = await ProductRepository.fetchProduct();
     productByBrand = List.from(products);
     setState(() {});
+  }
+
+  String getBrandName(int brandId) {
+    switch (brandId) {
+      case 1:
+        return 'Nike';
+      case 2:
+        return 'Puma';
+      case 3:
+        return 'Jordan';
+      case 4:
+        return 'Adidas';
+      case 5:
+        return 'Converse';
+      default:
+        return 'Tất cả';
+    }
   }
 
   @override
@@ -44,15 +65,15 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   height: 40,
                   width: 40,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color.fromARGB(255, 255, 255, 255),
+                    color: Color.fromARGB(255, 255, 255, 255),
                   ),
                 ),
-                Positioned.fill(child: Icon(Icons.grid_view_rounded, size: 20)),
+                const Positioned.fill(child: Icon(Icons.grid_view_rounded, size: 20)),
               ],
             ),
-            Text(
+            const Text(
               style: TextStyle(fontSize: 15, color: Colors.black),
               'Khám phá',
             ),
@@ -61,12 +82,12 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   height: 40,
                   width: 40,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white,
                   ),
                 ),
-                Positioned.fill(
+                const Positioned.fill(
                   child: Icon(Icons.shopping_bag_outlined, size: 20),
                 ),
                 Positioned(
@@ -75,9 +96,9 @@ class _HomePageState extends State<HomePage> {
                   child: Container(
                     height: 8,
                     width: 8,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color.fromARGB(255, 254, 69, 69),
+                      color: Color.fromARGB(255, 254, 69, 69),
                     ),
                   ),
                 ),
@@ -100,29 +121,30 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SearchPage()),
+                      MaterialPageRoute(builder: (context) => const SearchPage()),
                     );
                   },
                   decoration: InputDecoration(
                     hintText: 'Tìm kiếm giày',
-                    prefixIcon: Icon(Icons.search_outlined),
+                    prefixIcon: const Icon(Icons.search_outlined),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(width: 1, color: Colors.black),
+                      borderSide: const BorderSide(width: 1, color: Colors.black),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         width: 1,
-                        color: const Color.fromARGB(255, 83, 158, 251),
+                        color: Color.fromARGB(255, 83, 158, 251),
                       ),
                     ),
                   ),
                 ),
               ),
-              ListBrandsWidget(
+              ListBrandWidget(
                 voidCallback: (id) {
                   brandSelected = id;
+                  brandName = getBrandName(id);
                   productByBrand = products
                       .where((element) => element.brandId == brandSelected)
                       .toList();
@@ -132,12 +154,25 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Giày phổ biến'),
-                  Text(
-                    'Xem tất cả',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Color.fromARGB(255, 83, 158, 251),
+                  const Text('Giày phổ biến'),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductListBrandPage(
+                            products: productByBrand,
+                            brandName: brandName,
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Xem tất cả',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color.fromARGB(255, 83, 158, 251),
+                      ),
                     ),
                   ),
                 ],
@@ -147,18 +182,18 @@ class _HomePageState extends State<HomePage> {
                 child: SizedBox(
                   height: 500,
                   child: productByBrand.isEmpty
-                      ? Center(
+                      ? const Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.abc),
-                              Text('Không có sản phẩm nào!'),
+                              Icon(Icons.no_stroller_sharp),
+                              Text('Không có sản phẩm nào'),
                             ],
                           ),
                         )
                       : GridView.builder(
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
