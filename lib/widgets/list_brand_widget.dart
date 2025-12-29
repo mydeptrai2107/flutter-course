@@ -1,14 +1,11 @@
-import 'package:app/common/constant.dart';
-import 'package:app/common/data.dart';
 import 'package:app/models/brand_model.dart';
 import 'package:app/repository/brand_repository.dart';
-import 'package:app/storage/local_storage.dart';
 import 'package:flutter/material.dart';
 
 class ListBrandWidget extends StatefulWidget {
-  const ListBrandWidget({super.key, required this.voidCallback});
+  const ListBrandWidget({super.key,});
 
-  final void Function(int id) voidCallback;
+  
   @override
   State<ListBrandWidget> createState() => _ListBrandWidgetState();
 }
@@ -55,10 +52,6 @@ Future<void> _loadBrands() async{
   Widget _buildBrandItem(BrandModel brand) {
     return InkWell(
       onTap: () {
-        LocalStorage.setString(kBrand, brand.name);
-        widget.voidCallback.call(brand.id);
-        brandSelected = brand.id;
-        setState(() {});
       },
       child: Container(
         padding: const EdgeInsets.all(8.0),

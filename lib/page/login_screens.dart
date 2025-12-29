@@ -1,9 +1,7 @@
 import 'package:app/bottom_nav_basic.dart';
-import 'package:app/presentation/home/home_page.dart';
 import 'package:app/page/sign_up_screens.dart';
 import 'package:app/sevices/dialog_sevices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreens extends StatefulWidget {
