@@ -1,6 +1,7 @@
 import 'package:app/presentation/cart/cart_page.dart';
 import 'package:app/presentation/favorite/favorite_page.dart';
 import 'package:app/presentation/home/home_page.dart';
+import 'package:app/presentation/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBasic extends StatefulWidget {
@@ -17,7 +18,7 @@ class _BottomNavBasicState extends State<BottomNavBasic> {
     const FavoritePage(),
     const CartPage(),
     const Center(child: Text('Notification')),
-    const Center(child: Text('Persion')),
+    const ProfilePage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,7 @@ class _BottomNavBasicState extends State<BottomNavBasic> {
             icon: Icon(Icons.notifications),
             label: 'Notifications',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Person'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
