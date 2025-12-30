@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ListBrandWidget extends StatefulWidget {
-  const ListBrandWidget({super.key,});
+  const ListBrandWidget({super.key});
 
-  
   @override
   State<ListBrandWidget> createState() => _ListBrandWidgetState();
 }
@@ -15,11 +14,9 @@ class ListBrandWidget extends StatefulWidget {
 class _ListBrandWidgetState extends State<ListBrandWidget> {
   List<BrandModel> brands = [];
   bool isLoading = true;
-  int brandSelected = 1;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _loadBrands();
   }
@@ -52,25 +49,17 @@ class _ListBrandWidgetState extends State<ListBrandWidget> {
   }
 
   Widget _buildBrandItem(BrandModel brand) {
-    return InkWell(
-      onTap: () {
-      },
-      child: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-          color: brand.id == brandSelected ? Colors.blue : Colors.transparent,
-        ),
-        child: Row(
-          spacing: 5,
-          children: [
-            ClipOval(
-              child: Container(
-                color: const Color.fromARGB(255, 255, 255, 255),
-                height: 40,
-                width: 40,
-                child: Image.network(brand.image),
-              ),
+    return Selector<HomeProvider, int>(
+      builder: (context, value, child) {
+        return InkWell(
+          onTap: () {
+            context.read<HomeProvider>().selectBrand(brand.id);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              color: brand.id == value ? Colors.blue : Colors.transparent,
             ),
             child: Row(
               spacing: 5,
@@ -83,7 +72,7 @@ class _ListBrandWidgetState extends State<ListBrandWidget> {
                     child: Image.network(brand.image),
                   ),
                 ),
-                if (brand.id == brandSelected)
+                if (brand.id == value)
                   Text(brand.name, style: const TextStyle(color: Colors.white)),
               ],
             ),
