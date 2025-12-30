@@ -1,7 +1,6 @@
 import 'package:app/common/constant.dart';
 import 'package:app/models/product_model.dart';
 import 'package:app/repository/cart_repository.dart';
-import 'package:app/sevices/dialog_sevices.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailPage extends StatefulWidget {

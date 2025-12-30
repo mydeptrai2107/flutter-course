@@ -1,14 +1,10 @@
-import 'package:app/common/collection_name.dart';
-import 'package:app/common/data.dart';
 import 'package:app/models/product_model.dart';
-import 'package:app/page/product_list_brand_page.dart';
 import 'package:app/page/search_page.dart';
-import 'package:app/repository/product_repository.dart';
+import 'package:app/presentation/home/providers/home_provider.dart';
 import 'package:app/widgets/list_brand_widget.dart';
 import 'package:app/presentation/home/widget/product_item_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,19 +14,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<ProductModel> products = [];
-  List<ProductModel> productByBrand = [];
   int brandSelected = 1;
   String brandName = 'Nike';
   @override
   void initState() {
-    initData();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      initData(context);
+    });
     super.initState();
   }
 
-  Future<void> initData() async {
-    products = await ProductRepository.fetchProduct();
-    productByBrand = List.from(products);
+  Future<void> initData(BuildContext context) async {
+    context.read<HomeProvider>().fetchProduct();
     setState(() {});
   }
 
@@ -70,7 +65,9 @@ class _HomePageState extends State<HomePage> {
                     color: Color.fromARGB(255, 255, 255, 255),
                   ),
                 ),
-                const Positioned.fill(child: Icon(Icons.grid_view_rounded, size: 20)),
+                const Positioned.fill(
+                  child: Icon(Icons.grid_view_rounded, size: 20),
+                ),
               ],
             ),
             const Text(
@@ -121,7 +118,9 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const SearchPage()),
+                      MaterialPageRoute(
+                        builder: (context) => const SearchPage(),
+                      ),
                     );
                   },
                   decoration: InputDecoration(
@@ -129,7 +128,10 @@ class _HomePageState extends State<HomePage> {
                     prefixIcon: const Icon(Icons.search_outlined),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: const BorderSide(width: 1, color: Colors.black),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Colors.black,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -141,32 +143,13 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              ListBrandWidget(
-                voidCallback: (id) {
-                  brandSelected = id;
-                  brandName = getBrandName(id);
-                  productByBrand = products
-                      .where((element) => element.brandId == brandSelected)
-                      .toList();
-                  setState(() {});
-                },
-              ),
+              ListBrandWidget(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Giày phổ biến'),
                   InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductListBrandPage(
-                            products: productByBrand,
-                            brandName: brandName,
-                          ),
-                        ),
-                      );
-                    },
+                    onTap: () {},
                     child: const Text(
                       'Xem tất cả',
                       style: TextStyle(
@@ -181,7 +164,8 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: SizedBox(
                   height: 500,
-                  child: productByBrand.isEmpty
+                  child: Selector<HomeProvider,List<ProductModel>>(builder: (context, value, child) {
+                    return value.isEmpty
                       ? const Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -199,12 +183,13 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisSpacing: 10,
                                 mainAxisExtent: 250,
                               ),
-                          itemCount: productByBrand.length,
+                          itemCount: value.length,
                           itemBuilder: (context, index) {
-                            final item = productByBrand[index];
+                            final item = value[index];
                             return ProductItemWidget(item: item);
                           },
-                        ),
+                        );
+                  }, selector: (context, provider) => provider.products,)
                 ),
               ),
             ],

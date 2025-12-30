@@ -1,10 +1,11 @@
 import 'package:app/common/collection_name.dart';
 import 'package:app/models/cart_model.dart';
 import 'package:app/models/product_model.dart';
+import 'package:app/presentation/cart/providers/cart_provider.dart';
 import 'package:app/presentation/cart/widget/cart_widget_item.dart';
-import 'package:app/repository/cart_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -17,139 +18,137 @@ class _CartPageState extends State<CartPage> {
   final double shippingFee = 15000;
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CartProvider>().listenCart();
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Giỏ hàng',
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
-      ),
-      body: StreamBuilder(
-        stream: CartRepository.getCartItems(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 64,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Giỏ hàng trống',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          final cartItems = snapshot.data!.docs
-              .map((doc) => CartModel.fromJson(doc.id, doc.data()))
-              .toList();
-
-          return Column(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 3,
-                              horizontal: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.lightBlueAccent.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(7),
-                            ),
-                            child: Text(
-                              '${cartItems.length} Sản Phẩm',
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.lightBlueAccent,
-                              ),
-                            ),
-                          ),
-                          TextButton.icon(
-                            onPressed: () async {
-                              await CartRepository.deleteAllCartItems();
-                            },
-                            label: const Text(
-                              'Xóa tất cả',
-                              style: TextStyle(color: Colors.redAccent),
-                            ),
-                            icon: const Icon(
-                              Icons.delete_outlined,
-                              color: Colors.redAccent,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: cartItems.length,
-                          itemBuilder: (context, index) {
-                            final cartItem = cartItems[index];
-
-                            return FutureBuilder(
-                              future: FirebaseFirestore.instance
-                                  .collection(CollectionName.product)
-                                  .doc(cartItem.productId)
-                                  .get(),
-                              builder: (context, productSnapshot) {
-                                if (!productSnapshot.hasData) {
-                                  return const SizedBox();
-                                }
-
-                                final product = ProductModel.fromJson(
-                                  productSnapshot.data!.data()!,
-                                );
-                                product.id = productSnapshot.data!.id;
-
-                                return CartWidgetItem(
-                                  cartItem: cartItem,
-                                  product: product,
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              _buildCheckoutSection(),
-            ],
-          );
-        },
+      appBar: _buildAppBar(),
+      body: Column(
+        children: [
+          Expanded(child: _buildCartList()),
+          _buildCheckoutSection(),
+        ],
       ),
     );
   }
 
-  Widget _buildCheckoutSection() {
-    return FutureBuilder<double>(
-      future: CartRepository.calculateSubtotal(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const SizedBox();
+  AppBar _buildAppBar() {
+    return AppBar(
+      centerTitle: true,
+      title: const Text(
+        'Giỏ hàng',
+        style: TextStyle(fontSize: 16, color: Colors.black),
+      ),
+    );
+  }
+
+  /// ================= CART LIST =================
+  Widget _buildCartList() {
+    return Selector<CartProvider, List<CartModel>>(
+      selector: (_, provider) => provider.cartItems,
+      builder: (context, cartItems, child) {
+        if (cartItems.isEmpty) {
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.shopping_cart_outlined,
+                    size: 64, color: Colors.grey),
+                SizedBox(height: 16),
+                Text('Giỏ hàng trống',
+                    style: TextStyle(color: Colors.grey)),
+              ],
+            ),
+          );
         }
 
-        final subtotal = snapshot.data!;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              _buildHeader(cartItems.length),
+              const SizedBox(height: 10),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: cartItems.length,
+                  itemBuilder: (context, index) {
+                    final cartItem = cartItems[index];
+
+                    return FutureBuilder(
+                      future: FirebaseFirestore.instance
+                          .collection(CollectionName.product)
+                          .doc(cartItem.productId)
+                          .get(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const SizedBox();
+                        }
+
+                        final product = ProductModel.fromJson(
+                          snapshot.data!.data()!,
+                        );
+                        product.id = snapshot.data!.id;
+
+                        return CartWidgetItem(
+                          cartItem: cartItem,
+                          product: product,
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// ================= HEADER =================
+  Widget _buildHeader(int itemCount) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          padding:
+              const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.lightBlueAccent.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: Text(
+            '$itemCount Sản phẩm',
+            style: const TextStyle(
+              fontSize: 10,
+              color: Colors.lightBlueAccent,
+            ),
+          ),
+        ),
+        TextButton.icon(
+          onPressed: () =>
+              context.read<CartProvider>().deleteAllCartItems(),
+          icon: const Icon(Icons.delete, color: Colors.red),
+          label: const Text(
+            'Xóa tất cả',
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// ================= CHECKOUT =================
+  Widget _buildCheckoutSection() {
+    return Selector<CartProvider, double>(
+      selector: (_, provider) => provider.subTotal,
+      builder: (context, subtotal, child) {
         final total = subtotal + shippingFee;
 
         return Container(
@@ -159,7 +158,6 @@ class _CartPageState extends State<CartPage> {
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 1,
                 blurRadius: 10,
                 offset: const Offset(0, -3),
               ),
@@ -179,9 +177,7 @@ class _CartPageState extends State<CartPage> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Chức năng thanh toán
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.lightBlueAccent,
                     shape: RoundedRectangleBorder(
@@ -191,10 +187,8 @@ class _CartPageState extends State<CartPage> {
                   child: const Text(
                     'Thanh toán',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -205,7 +199,8 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _buildPriceRow(String label, double amount, {bool isTotal = false}) {
+  Widget _buildPriceRow(String label, double amount,
+      {bool isTotal = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -213,16 +208,18 @@ class _CartPageState extends State<CartPage> {
           label,
           style: TextStyle(
             fontSize: isTotal ? 16 : 14,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-            color: isTotal ? Colors.black : Colors.grey[700],
+            fontWeight:
+                isTotal ? FontWeight.bold : FontWeight.normal,
           ),
         ),
         Text(
           '${amount.toStringAsFixed(0)} đ',
           style: TextStyle(
             fontSize: isTotal ? 18 : 14,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.w600,
-            color: isTotal ? Colors.lightBlueAccent : Colors.black,
+            fontWeight:
+                isTotal ? FontWeight.bold : FontWeight.w600,
+            color:
+                isTotal ? Colors.lightBlueAccent : Colors.black,
           ),
         ),
       ],
