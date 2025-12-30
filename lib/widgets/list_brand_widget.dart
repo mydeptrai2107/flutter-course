@@ -1,6 +1,8 @@
 import 'package:app/models/brand_model.dart';
+import 'package:app/presentation/home/providers/home_provider.dart';
 import 'package:app/repository/brand_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ListBrandWidget extends StatefulWidget {
   const ListBrandWidget({super.key,});
@@ -12,30 +14,30 @@ class ListBrandWidget extends StatefulWidget {
 
 class _ListBrandWidgetState extends State<ListBrandWidget> {
   List<BrandModel> brands = [];
-bool isLoading = true;
+  bool isLoading = true;
   int brandSelected = 1;
 
   @override
   void initState() {
-    
     // TODO: implement initState
     super.initState();
     _loadBrands();
   }
-Future<void> _loadBrands() async{
-  final data = await BrandRepository.getBrands();
-  setState(() {
-    brands = data;
-    isLoading = false;
-  });
 
-}
+  Future<void> _loadBrands() async {
+    final data = await BrandRepository.getBrands();
+    setState(() {
+      brands = data;
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if(isLoading){
+    if (isLoading) {
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 10),
-        child: const Center(child: CircularProgressIndicator(),),
+        child: const Center(child: CircularProgressIndicator()),
       );
     }
     return Container(
@@ -70,11 +72,27 @@ Future<void> _loadBrands() async{
                 child: Image.network(brand.image),
               ),
             ),
-            if (brand.id == brandSelected)
-              Text(brand.name, style: const TextStyle(color: Colors.white)),
-          ],
-        ),
-      ),
+            child: Row(
+              spacing: 5,
+              children: [
+                ClipOval(
+                  child: Container(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    height: 40,
+                    width: 40,
+                    child: Image.network(brand.image),
+                  ),
+                ),
+                if (brand.id == brandSelected)
+                  Text(brand.name, style: const TextStyle(color: Colors.white)),
+              ],
+            ),
+          ),
+        );
+      },
+      selector: (context, p) {
+        return p.brandSelected;
+      },
     );
   }
 }
