@@ -2,7 +2,6 @@ import 'package:app/page/login_screens.dart';
 import 'package:app/presentation/profile/providers/profile_provider.dart';
 import 'package:app/presentation/profile/widget/edit_profile_widget.dart';
 import 'package:app/presentation/profile/widget/change_password_widget.dart';
-import 'package:app/sevices/dialog_sevices.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

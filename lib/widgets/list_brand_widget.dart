@@ -42,14 +42,18 @@ class _ListBrandWidgetState extends State<ListBrandWidget> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: [for (final brand in brands) _buildBrandItem(brand)],
+          children: [
+            for (final brand in brands) _buildBrandItem(context, brand),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildBrandItem(BrandModel brand) {
-    return Selector<HomeProvider, int>(
+  Widget _buildBrandItem(BuildContext context, BrandModel brand) {
+    // final brandSelected = context.watch<HomeProvider>().brandSelected;
+    
+    return Consumer<HomeProvider>(
       builder: (context, value, child) {
         return InkWell(
           onTap: () {
@@ -59,7 +63,9 @@ class _ListBrandWidgetState extends State<ListBrandWidget> {
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: brand.id == value ? Colors.blue : Colors.transparent,
+              color: brand.id == value.brandSelected
+                  ? Colors.blue
+                  : Colors.transparent,
             ),
             child: Row(
               spacing: 5,
@@ -72,15 +78,12 @@ class _ListBrandWidgetState extends State<ListBrandWidget> {
                     child: Image.network(brand.image),
                   ),
                 ),
-                if (brand.id == value)
+                if (brand.id == value.brandSelected)
                   Text(brand.name, style: const TextStyle(color: Colors.white)),
               ],
             ),
           ),
         );
-      },
-      selector: (context, p) {
-        return p.brandSelected;
       },
     );
   }

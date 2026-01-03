@@ -4,4 +4,6 @@ class CollectionName {
   static const String favorite = "Favorites";
   static const String user = "Users";
   static const String carts = "Carts";
+  static const String checkoutInfo = "Checkout Info";
+  static const String checkout = "Checkout";
 }

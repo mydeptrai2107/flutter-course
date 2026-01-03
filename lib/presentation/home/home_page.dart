@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              ListBrandWidget(),
+              const ListBrandWidget(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -164,32 +164,35 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: SizedBox(
                   height: 500,
-                  child: Selector<HomeProvider,List<ProductModel>>(builder: (context, value, child) {
-                    return value.isEmpty
-                      ? const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.no_stroller_sharp),
-                              Text('Không có sản phẩm nào'),
-                            ],
-                          ),
-                        )
-                      : GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                mainAxisExtent: 250,
+                  child: Selector<HomeProvider, List<ProductModel>>(
+                    builder: (context, value, child) {
+                      return value.isEmpty
+                          ? const Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.no_stroller_sharp),
+                                  Text('Không có sản phẩm nào'),
+                                ],
                               ),
-                          itemCount: value.length,
-                          itemBuilder: (context, index) {
-                            final item = value[index];
-                            return ProductItemWidget(item: item);
-                          },
-                        );
-                  }, selector: (context, provider) => provider.products,)
+                            )
+                          : GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    mainAxisExtent: 250,
+                                  ),
+                              itemCount: value.length,
+                              itemBuilder: (context, index) {
+                                final item = value[index];
+                                return ProductItemWidget(item: item);
+                              },
+                            );
+                    },
+                    selector: (context, provider) => provider.products,
+                  ),
                 ),
               ),
             ],

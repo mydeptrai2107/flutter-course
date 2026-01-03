@@ -7,9 +7,12 @@ import 'package:flutter/material.dart';
 class CartProvider extends ChangeNotifier {
   List<CartModel> _cartItems = [];
   List<CartModel> get cartItems => _cartItems;
+
   double _subTotal = 0;
   double get subTotal => _subTotal;
+
   StreamSubscription? _cartSubscription;
+
   void listenCart() {
     _cartSubscription?.cancel();
     _cartSubscription = CartRepository.getCartItems().listen((snapshot) async {
