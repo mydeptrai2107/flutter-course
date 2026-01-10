@@ -3,6 +3,8 @@ import 'package:app/models/cart_model.dart';
 import 'package:app/models/product_model.dart';
 import 'package:app/presentation/cart/providers/cart_provider.dart';
 import 'package:app/presentation/cart/widget/cart_widget_item.dart';
+import 'package:app/presentation/checkout/checkout_page.dart';
+import 'package:app/presentation/checkout/widget/checkout_summary.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,11 +31,31 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          Expanded(child: _buildCartList()),
-          _buildCheckoutSection(),
-        ],
+      body: Consumer<CartProvider>(
+        builder: (context, value, child) {
+          if (value.cartItems.isEmpty) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.shopping_cart_outlined,
+                    size: 64,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(height: 16),
+                  Text('Giỏ hàng trống', style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+            );
+          }
+          return Column(
+            children: [
+              Expanded(child: _buildCartList()),
+              _buildCheckoutSection(),
+            ],
+          );
+        },
       ),
     );
   }
@@ -53,21 +75,6 @@ class _CartPageState extends State<CartPage> {
     return Selector<CartProvider, List<CartModel>>(
       selector: (_, provider) => provider.cartItems,
       builder: (context, cartItems, child) {
-        if (cartItems.isEmpty) {
-          return const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.shopping_cart_outlined,
-                    size: 64, color: Colors.grey),
-                SizedBox(height: 16),
-                Text('Giỏ hàng trống',
-                    style: TextStyle(color: Colors.grey)),
-              ],
-            ),
-          );
-        }
-
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -117,28 +124,20 @@ class _CartPageState extends State<CartPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          padding:
-              const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
           decoration: BoxDecoration(
             color: Colors.lightBlueAccent.withOpacity(0.1),
             borderRadius: BorderRadius.circular(7),
           ),
           child: Text(
             '$itemCount Sản phẩm',
-            style: const TextStyle(
-              fontSize: 10,
-              color: Colors.lightBlueAccent,
-            ),
+            style: const TextStyle(fontSize: 10, color: Colors.lightBlueAccent),
           ),
         ),
         TextButton.icon(
-          onPressed: () =>
-              context.read<CartProvider>().deleteAllCartItems(),
+          onPressed: () => context.read<CartProvider>().deleteAllCartItems(),
           icon: const Icon(Icons.delete, color: Colors.red),
-          label: const Text(
-            'Xóa tất cả',
-            style: TextStyle(color: Colors.red),
-          ),
+          label: const Text('Xóa tất cả', style: TextStyle(color: Colors.red)),
         ),
       ],
     );
@@ -151,78 +150,18 @@ class _CartPageState extends State<CartPage> {
       builder: (context, subtotal, child) {
         final total = subtotal + shippingFee;
 
-        return Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, -3),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              _buildPriceRow('Thành tiền', subtotal),
-              const SizedBox(height: 12),
-              _buildPriceRow('Vận chuyển', shippingFee),
-              const SizedBox(height: 12),
-              const Divider(),
-              const SizedBox(height: 12),
-              _buildPriceRow('Tổng cộng', total, isTotal: true),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightBlueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
-                  child: const Text(
-                    'Thanh toán',
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        return CheckoutSummary(
+          subTotal: subtotal,
+          shippingFee: shippingFee,
+          buttonText: 'Thanh toán',
+          onCheckout: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CheckoutPage()),
+            );
+          },
         );
       },
-    );
-  }
-
-  Widget _buildPriceRow(String label, double amount,
-      {bool isTotal = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: isTotal ? 16 : 14,
-            fontWeight:
-                isTotal ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-        Text(
-          '${amount.toStringAsFixed(0)} đ',
-          style: TextStyle(
-            fontSize: isTotal ? 18 : 14,
-            fontWeight:
-                isTotal ? FontWeight.bold : FontWeight.w600,
-            color:
-                isTotal ? Colors.lightBlueAccent : Colors.black,
-          ),
-        ),
-      ],
     );
   }
 }
