@@ -1,9 +1,11 @@
 import 'package:app/bottom_nav_basic.dart';
+import 'package:app/firebase_options.dart';
 import 'package:app/page/login_screens.dart';
 import 'package:app/presentation/cart/providers/cart_provider.dart';
 import 'package:app/presentation/checkout/providers/checkout_provider.dart';
 import 'package:app/presentation/home/providers/home_provider.dart';
 import 'package:app/presentation/profile/providers/profile_provider.dart';
+import 'package:app/sevices/notification_service.dart';
 import 'package:app/storage/local_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,10 +14,11 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+    name: 'Dev',
+  );
   await LocalStorage.init();
-  // await ProductRepository.loadProductData();
-  //await BrandRepository.loadBrandData();
 
   runApp(
     MultiProvider(
@@ -35,7 +38,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    NotificationService().init();
     final auth = FirebaseAuth.instance.currentUser;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: auth == null ? const LoginScreens() : const BottomNavBasic(),
