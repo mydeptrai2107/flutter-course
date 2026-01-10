@@ -143,7 +143,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              ListBrandWidget(),
+              
+              const ListBrandWidget(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -183,13 +184,16 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisSpacing: 10,
                                 mainAxisExtent: 250,
                               ),
-                          itemCount: value.length,
-                          itemBuilder: (context, index) {
-                            final item = value[index];
-                            return ProductItemWidget(item: item);
-                          },
-                        );
-                  }, selector: (context, provider) => provider.products,)
+                           itemCount: value.length,
+                              itemBuilder: (context, index) {
+                                final item = value[index];
+                                return ProductItemWidget(item: item);
+                              },
+                            );
+                    },
+                    selector: (context, provider) => provider.products,
+                  ),
+                        
                 ),
               ),
             ],

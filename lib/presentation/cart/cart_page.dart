@@ -3,6 +3,7 @@ import 'package:app/models/cart_model.dart';
 import 'package:app/models/product_model.dart';
 import 'package:app/presentation/cart/providers/cart_provider.dart';
 import 'package:app/presentation/cart/widget/cart_widget_item.dart';
+import 'package:app/presentation/checkout/checkout_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -58,11 +59,13 @@ class _CartPageState extends State<CartPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.shopping_cart_outlined,
-                    size: 64, color: Colors.grey),
+                Icon(
+                  Icons.shopping_cart_outlined,
+                  size: 64,
+                  color: Colors.grey,
+                ),
                 SizedBox(height: 16),
-                Text('Giỏ hàng trống',
-                    style: TextStyle(color: Colors.grey)),
+                Text('Giỏ hàng trống', style: TextStyle(color: Colors.grey)),
               ],
             ),
           );
@@ -117,28 +120,20 @@ class _CartPageState extends State<CartPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          padding:
-              const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
           decoration: BoxDecoration(
             color: Colors.lightBlueAccent.withOpacity(0.1),
             borderRadius: BorderRadius.circular(7),
           ),
           child: Text(
             '$itemCount Sản phẩm',
-            style: const TextStyle(
-              fontSize: 10,
-              color: Colors.lightBlueAccent,
-            ),
+            style: const TextStyle(fontSize: 10, color: Colors.lightBlueAccent),
           ),
         ),
         TextButton.icon(
-          onPressed: () =>
-              context.read<CartProvider>().deleteAllCartItems(),
+          onPressed: () => context.read<CartProvider>().deleteAllCartItems(),
           icon: const Icon(Icons.delete, color: Colors.red),
-          label: const Text(
-            'Xóa tất cả',
-            style: TextStyle(color: Colors.red),
-          ),
+          label: const Text('Xóa tất cả', style: TextStyle(color: Colors.red)),
         ),
       ],
     );
@@ -177,7 +172,14 @@ class _CartPageState extends State<CartPage> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CheckoutPage(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.lightBlueAccent,
                     shape: RoundedRectangleBorder(
@@ -186,9 +188,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                   child: const Text(
                     'Thanh toán',
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -199,8 +199,7 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _buildPriceRow(String label, double amount,
-      {bool isTotal = false}) {
+  Widget _buildPriceRow(String label, double amount, {bool isTotal = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -208,18 +207,15 @@ class _CartPageState extends State<CartPage> {
           label,
           style: TextStyle(
             fontSize: isTotal ? 16 : 14,
-            fontWeight:
-                isTotal ? FontWeight.bold : FontWeight.normal,
+            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
           ),
         ),
         Text(
           '${amount.toStringAsFixed(0)} đ',
           style: TextStyle(
             fontSize: isTotal ? 18 : 14,
-            fontWeight:
-                isTotal ? FontWeight.bold : FontWeight.w600,
-            color:
-                isTotal ? Colors.lightBlueAccent : Colors.black,
+            fontWeight: isTotal ? FontWeight.bold : FontWeight.w600,
+            color: isTotal ? Colors.lightBlueAccent : Colors.black,
           ),
         ),
       ],

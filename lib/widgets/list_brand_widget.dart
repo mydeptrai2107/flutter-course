@@ -42,46 +42,48 @@ class _ListBrandWidgetState extends State<ListBrandWidget> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: [for (final brand in brands) _buildBrandItem(brand)],
+          children: [
+            for (final brand in brands) _buildBrandItem(context, brand),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildBrandItem(BrandModel brand) {
-    return Selector<HomeProvider, int>(
-      builder: (context, value, child) {
-        return InkWell(
-          onTap: () {
-            context.read<HomeProvider>().selectBrand(brand.id);
-          },
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: brand.id == value ? Colors.blue : Colors.transparent,
-            ),
-            child: Row(
-              spacing: 5,
-              children: [
-                ClipOval(
-                  child: Container(
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                    height: 40,
-                    width: 40,
-                    child: Image.network(brand.image),
-                  ),
-                ),
-                if (brand.id == value)
-                  Text(brand.name, style: const TextStyle(color: Colors.white)),
-              ],
-            ),
-          ),
-        );
+  Widget _buildBrandItem(BuildContext context, BrandModel brand) {
+    // final branItemSelected = context.watch<HomeProvider>().brandSelected;
+    return Consumer<HomeProvider>(builder: (context, value, child) {
+       return InkWell(
+      onTap: () {
+        context.read<HomeProvider>().selectBrand(brand.id);
       },
-      selector: (context, p) {
-        return p.brandSelected;
-      },
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100),
+          color: brand.id == value.brandSelected
+              ? Colors.blue
+              : Colors.transparent,
+        ),
+        child: Row(
+          spacing: 5,
+          children: [
+            ClipOval(
+              child: Container(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                height: 40,
+                width: 40,
+                child: Image.network(brand.image),
+              ),
+            ),
+            if (brand.id == value.brandSelected )
+              Text(brand.name, style: const TextStyle(color: Colors.white)),
+          ],
+        ),
+      ),
     );
+      
+    },);
+   
   }
 }

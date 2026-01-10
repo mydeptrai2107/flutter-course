@@ -1,7 +1,7 @@
 import 'package:app/bottom_nav_basic.dart';
 import 'package:app/page/login_screens.dart';
 import 'package:app/presentation/cart/providers/cart_provider.dart';
-import 'package:app/presentation/home/providers/home_provider.dart';
+import 'package:app/presentation/checkout/provider/checkout_provider.dart';
 import 'package:app/presentation/home/providers/home_provider.dart';
 import 'package:app/presentation/profile/providers/profile_provider.dart';
 import 'package:app/storage/local_storage.dart';
@@ -23,6 +23,9 @@ void main() async {
         ChangeNotifierProvider(create: (context) => HomeProvider()),
         ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
+        ChangeNotifierProvider(
+          create: (context) => CheckoutProvider(context.read<CartProvider>()),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -37,6 +40,7 @@ class MyApp extends StatelessWidget {
     final auth = FirebaseAuth.instance.currentUser;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      // home: const CheckoutPage(),
       home: auth == null ? const LoginScreens() : const BottomNavBasic(),
     );
     //return MaterialApp(debugShowCheckedModeBanner: false, home: const CartPage());

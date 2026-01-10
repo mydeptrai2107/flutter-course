@@ -22,4 +22,16 @@ class CartModel {
       quantity: json['quantity'] ?? 1,
     );
   }
+
+  static Map<String, dynamic> toJson(CartModel cart) {
+    return{
+      "id" : cart.id,
+      "productId" : cart.productId,
+      " size" : cart.size,
+      " color" : cart.color,
+      "quantity" : cart.quantity,
+    };
+  }
+
+  
 }
