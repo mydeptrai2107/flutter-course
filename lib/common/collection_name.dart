@@ -6,4 +6,7 @@ class CollectionName {
   static const String carts = "Carts";
   static const String checkoutInfo = "CheckoutInfo";
   static const String orders = "orders";
+  static const String admin = "Admin";
+  static const String chatRoom = "ChatRoom";
+  static const String message = "Message";
 }

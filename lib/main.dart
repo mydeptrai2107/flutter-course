@@ -1,3 +1,4 @@
+import 'package:app/admin/presentation/dashboard_screen.dart';
 import 'package:app/bottom_nav_basic.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/page/login_screens.dart';
@@ -5,6 +6,7 @@ import 'package:app/presentation/cart/providers/cart_provider.dart';
 import 'package:app/presentation/checkout/providers/checkout_provider.dart';
 import 'package:app/presentation/home/providers/home_provider.dart';
 import 'package:app/presentation/profile/providers/profile_provider.dart';
+import 'package:app/sevices/auth_services.dart';
 import 'package:app/sevices/notification_service.dart';
 import 'package:app/storage/local_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -43,8 +45,19 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: auth == null ? const LoginScreens() : const BottomNavBasic(),
+      home: auth == null
+          ? const LoginScreens()
+          : FutureBuilder(
+              future: AuthServices().checkAdmin(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return snapshot.data!
+                      ? const DashboardScreen()
+                      : const BottomNavBasic();
+                }
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
     );
-    //return MaterialApp(debugShowCheckedModeBanner: false, home: const CartPage());
   }
 }
