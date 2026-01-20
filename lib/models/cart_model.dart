@@ -5,7 +5,7 @@ class CartModel {
   int color;
   int quantity;
   double productPrice; // ✅ Thêm thuộc tính này
-  
+
   CartModel({
     required this.id,
     required this.productId,
@@ -22,7 +22,8 @@ class CartModel {
       size: json['size'] ?? 0,
       color: json['color'] ?? 0,
       quantity: json['quantity'] ?? 1,
-      productPrice: (json['productPrice'] as num?)?.toDouble() ?? 0.0, // ✅ Parse từ JSON
+      productPrice:
+          (json['productPrice'] as num?)?.toDouble() ?? 0.0, // ✅ Parse từ JSON
     );
   }
 

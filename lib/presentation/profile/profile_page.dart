@@ -1,8 +1,8 @@
 import 'package:app/page/login_screens.dart';
+import 'package:app/presentation/oder/order_history_page.dart';
 import 'package:app/presentation/profile/providers/profile_provider.dart';
 import 'package:app/presentation/profile/widget/edit_profile_widget.dart';
 import 'package:app/presentation/profile/widget/change_password_widget.dart';
-import 'package:app/sevices/dialog_sevices.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -94,8 +94,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 16),
                 _infoCard(user),
                 const SizedBox(height: 16),
-                _securityCard(context, profileProvider),
+                _purchasehistoryCard(context, profileProvider),
                 const SizedBox(height: 20),
+                _securityCard(context, profileProvider),
+                const SizedBox(height: 4),
               ],
             ),
           );
@@ -160,6 +162,50 @@ class _ProfilePageState extends State<ProfilePage> {
             user.phone.isEmpty ? 'Chưa cập nhật' : user.phone,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _purchasehistoryCard(BuildContext context, ProfileProvider provider) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const OrderHistoryPage()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: _cardDecoration(),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade100,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.history, color: Colors.blue),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'Lịch sử mua hàng',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Xem lại các đơn hàng đã đặt',
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

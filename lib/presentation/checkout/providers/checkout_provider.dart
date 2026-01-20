@@ -1,3 +1,4 @@
+import 'package:app/common/collection_name.dart';
 import 'package:app/models/checkout_info_model.dart';
 import 'package:flutter/material.dart';
 import 'package:app/models/order_model.dart';
@@ -139,14 +140,25 @@ class CheckoutProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final orderItems = cartItems.map((cart) {
-        return OrderItem(
-          productId: cart.productId,
-          productName: 'Product ${cart.productId}',
-          quantity: cart.quantity,
-          price: cart.productPrice,
+      // Fetch tên sản phẩm và hình ảnh cho mỗi item trong giỏ hàng
+      final orderItems = <OrderItem>[];
+
+      for (var cart in cartItems) {
+        final productName = await _repository.getProductName(cart.productId);
+        final productImage = await _repository.getProductImage(cart.productId);
+
+        orderItems.add(
+          OrderItem(
+            productId: cart.productId,
+            productName: productName,
+            quantity: cart.quantity,
+            price: cart.productPrice,
+            image: productImage,
+            size: cart.size.toString(),
+            color: cart.color.toString(),
+          ),
         );
-      }).toList();
+      }
 
       final order = OrderModel(
         userId: userId,

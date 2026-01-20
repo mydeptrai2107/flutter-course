@@ -232,7 +232,49 @@ class CheckoutRepository {
 
   /// ================= QUẢN LÝ ĐƠN HÀNG =================
 
-  // Tạo đơn hàng
+  // Các method quản lý đơn hàng đã được tách vào OrderRepository
+  // Vui lòng sử dụng OrderRepository cho các thao tác liên quan đến đơn hàng
+
+  /// Lấy tên sản phẩm từ product ID
+  Future<String> getProductName(String productId) async {
+    try {
+      final doc = await _firestore
+          .collection(CollectionName.product)
+          .doc(productId)
+          .get();
+
+      if (doc.exists) {
+        return doc['name'] ?? 'Sản phẩm';
+      }
+      return 'Sản phẩm';
+    } catch (e) {
+      print('Error getting product name: $e');
+      return 'Sản phẩm';
+    }
+  }
+
+  /// Lấy hình ảnh sản phẩm từ product ID
+  Future<String> getProductImage(String productId) async {
+    try {
+      final doc = await _firestore
+          .collection(CollectionName.product)
+          .doc(productId)
+          .get();
+
+      if (doc.exists) {
+        final images = doc['images'];
+        if (images is List && images.isNotEmpty) {
+          return images[0] ?? '';
+        }
+      }
+      return '';
+    } catch (e) {
+      print('Error getting product image: $e');
+      return '';
+    }
+  }
+
+  /// Tạo đơn hàng
   Future<String?> createOrder(OrderModel order) async {
     final user = _auth.currentUser;
     if (user == null) return null;

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class OrderModel {
   String? id;
   final String userId;
@@ -42,42 +44,57 @@ class OrderModel {
       'total': total,
       'status': status,
       'items': items.map((e) => e.toJson()).toList(),
-      'createdAt': createdAt.toIso8601String(),
+
+      'createdAt': Timestamp.fromDate(createdAt),
     };
   }
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
-    return OrderModel(
-      id: json['id'],
-      userId: json['userId'] ?? '',
-      fullName: json['fullName'] ?? '',
-      phone: json['phone'] ?? '',
-      address: json['address'] ?? '',
-      city: json['city'] ?? '',
-      district: json['district'] ?? '',
-      subTotal: (json['subTotal'] as num).toDouble(),
-      shippingFee: (json['shippingFee'] as num).toDouble(),
-      total: (json['total'] as num).toDouble(),
-      status: json['status'] ?? 'pending',
-      items: (json['items'] as List)
-          .map((e) => OrderItem.fromJson(e))
-          .toList(),
-      createdAt: DateTime.parse(json['createdAt']),
-    );
+    try {
+      print('Mapping OrderModel from JSON: $json');
+      return OrderModel(
+        id: json['id'],
+        userId: json['userId'] ?? '',
+        fullName: json['fullName'] ?? '',
+        phone: json['phone'] ?? '',
+        address: json['address'] ?? '',
+        city: json['city'] ?? '',
+        district: json['district'] ?? '',
+        subTotal: (json['subTotal'] as num).toDouble(),
+        shippingFee: (json['shippingFee'] as num).toDouble(),
+        total: (json['total'] as num).toDouble(),
+        status: json['status'] ?? 'pending',
+        items: (json['items'] as List)
+            .map((e) => OrderItem.fromJson(e))
+            .toList(),
+        createdAt: json['createdAt'] is Timestamp
+            ? (json['createdAt'] as Timestamp).toDate()
+            : DateTime.parse(json['createdAt']),
+      );
+    } catch (e) {
+      print('Error mapping OrderModel: $e');
+      rethrow;
+    }
   }
 }
 
 class OrderItem {
   final String productId;
-  final String productName;
+  String productName;
   final int quantity;
   final double price;
+  final String image;
+  final String size;
+  final String color;
 
   OrderItem({
     required this.productId,
     required this.productName,
     required this.quantity,
     required this.price,
+    required this.image,
+    required this.size,
+    required this.color,
   });
 
   Map<String, dynamic> toJson() {
@@ -86,6 +103,9 @@ class OrderItem {
       'productName': productName,
       'quantity': quantity,
       'price': price,
+      'image': image,
+      'size': size,
+      'color': color,
     };
   }
 
@@ -93,8 +113,11 @@ class OrderItem {
     return OrderItem(
       productId: json['productId'] ?? '',
       productName: json['productName'] ?? '',
-      quantity: json['quantity'] ?? 0,
-      price: (json['price'] as num).toDouble(),
+      quantity: (json['quantity'] as num?)?.toInt() ?? 0,
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      image: json['image'] ?? '',
+      size: json['size'] ?? 'Không xác định',
+      color: json['color'] ?? 'Không xác định',
     );
   }
 }
