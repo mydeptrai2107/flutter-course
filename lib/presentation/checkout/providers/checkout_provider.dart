@@ -129,6 +129,7 @@ class CheckoutProvider extends ChangeNotifier {
     required List<CartModel> cartItems,
     required double subtotal,
     required double shippingFee,
+    required String status
   }) async {
     if (!isFormValid()) {
       print('Form is not valid');
@@ -158,6 +159,7 @@ class CheckoutProvider extends ChangeNotifier {
         subTotal: subtotal,
         shippingFee: shippingFee,
         total: subtotal + shippingFee,
+    status: status,
         items: orderItems,
         createdAt: DateTime.now(),
       );

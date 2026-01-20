@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class OrderModel {
   String? id;
   final String userId;
@@ -24,7 +26,7 @@ class OrderModel {
     required this.subTotal,
     required this.shippingFee,
     required this.total,
-    this.status = 'pending',
+    required this.status,
     required this.items,
     required this.createdAt,
   });
@@ -47,23 +49,63 @@ class OrderModel {
   }
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
-    return OrderModel(
-      id: json['id'],
-      userId: json['userId'] ?? '',
-      fullName: json['fullName'] ?? '',
-      phone: json['phone'] ?? '',
-      address: json['address'] ?? '',
-      city: json['city'] ?? '',
-      district: json['district'] ?? '',
-      subTotal: (json['subTotal'] as num).toDouble(),
-      shippingFee: (json['shippingFee'] as num).toDouble(),
-      total: (json['total'] as num).toDouble(),
-      status: json['status'] ?? 'pending',
-      items: (json['items'] as List)
-          .map((e) => OrderItem.fromJson(e))
-          .toList(),
-      createdAt: DateTime.parse(json['createdAt']),
-    );
+    try {
+      return OrderModel(
+        id: json['id'],
+        userId: json['userId'] ?? '',
+        fullName: json['fullName'] ?? '',
+        phone: json['phone'] ?? '',
+        address: json['address'] ?? '',
+        city: json['city'] ?? '',
+        district: json['district'] ?? '',
+        subTotal: (json['subTotal'] ?? 0).toDouble(),
+        shippingFee: (json['shippingFee'] ?? 0).toDouble(),
+        total: (json['total'] ?? 0).toDouble(),
+        status: json['status'] ?? 'pending',
+        items:
+            (json['items'] as List<dynamic>?)
+                ?.map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+        createdAt: json['createdAt'] is String
+            ? DateTime.parse(json['createdAt'])
+            : DateTime.now(),
+      );
+    } catch (e) {
+      print('❌ Error parsing OrderModel: $e');
+      print('📦 JSON data: $json');
+      rethrow;
+    }
+  }
+
+  Color getStatusColor() {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return Colors.orange;
+      case 'processing':
+        return Colors.blue;
+      case 'completed':
+        return Colors.green;
+      case 'cancelled':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  String getStatusText() {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'Chờ xác nhận';
+      case 'processing':
+        return 'Đang vận chuyển';
+      case 'completed':
+        return 'Hoàn thành';
+      case 'cancelled':
+        return 'Đã hủy';
+      default:
+        return 'Không xác định';
+    }
   }
 }
 

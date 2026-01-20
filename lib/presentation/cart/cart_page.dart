@@ -148,8 +148,6 @@ class _CartPageState extends State<CartPage> {
     return Selector<CartProvider, double>(
       selector: (_, provider) => provider.subTotal,
       builder: (context, subtotal, child) {
-        final total = subtotal + shippingFee;
-
         return CheckoutSummary(
           subTotal: subtotal,
           shippingFee: shippingFee,
@@ -157,7 +155,7 @@ class _CartPageState extends State<CartPage> {
           onCheckout: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CheckoutPage()),
+              MaterialPageRoute(builder: (context) => const CheckoutPage()),
             );
           },
         );

@@ -1,9 +1,7 @@
 import 'package:app/common/collection_name.dart';
-import 'package:app/common/constant.dart';
 import 'package:app/models/product_model.dart';
 import 'package:app/page/product_detail_page.dart';
 import 'package:app/repository/favorite_reposity.dart';
-import 'package:app/storage/local_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

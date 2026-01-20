@@ -1,6 +1,9 @@
+import 'package:app/admin/presentation/dashboard_screen.dart';
 import 'package:app/bottom_nav_basic.dart';
+import 'package:app/common/collection_name.dart';
 import 'package:app/page/sign_up_screens.dart';
 import 'package:app/sevices/dialog_sevices.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +44,10 @@ class _LoginScreensState extends State<LoginScreens> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 30),
+        padding: const EdgeInsetsGeometry.symmetric(
+          horizontal: 20,
+          vertical: 30,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,19 +130,39 @@ class _LoginScreensState extends State<LoginScreens> {
                         return;
                       }
                       try {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: email,
-                          password: password,
-                        );
+                        final res = await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                              email: email,
+                              password: password,
+                            );
+                        if (res.user == null) {
+                          throw FirebaseException(plugin: 'Đăng nhập thất bại');
+                        }
+
                         await DialogSevices.notificeDialog(
                           context: context,
                           isSuccess: true,
                           content: 'Đăng nhập thành công',
                         );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const BottomNavBasic()),
-                        );
+                        final admin = await FirebaseFirestore.instance
+                            .collection(CollectionName.admins)
+                            .get();
+                        final idAdmin = admin.docs.first['id'];
+                        if (idAdmin == res.user!.uid) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const DashboardScreen(),
+                            ),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BottomNavBasic(),
+                            ),
+                          );
+                        }
                       } on FirebaseAuthException catch (e) {
                         DialogSevices.notificeDialog(
                           context: context,
