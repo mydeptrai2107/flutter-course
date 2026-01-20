@@ -101,7 +101,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   icon: Icons.email_outlined,
                   label: 'Email',
                   value: info?.name ?? 'Chưa có email',
-                  isEmpty: info?.name?.isEmpty ?? true,
+                  isEmpty: info?.name.isEmpty ?? true,
                   onEdit: () =>
                       _showEditDialog(context, 'name', info?.name ?? ''),
                 ),
@@ -113,7 +113,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   icon: Icons.phone,
                   label: 'Số điện thoại',
                   value: info?.sdt ?? 'Chưa có số điện thoại',
-                  isEmpty: info?.sdt?.isEmpty ?? true,
+                  isEmpty: info?.sdt.isEmpty ?? true,
                   onEdit: () =>
                       _showEditDialog(context, 'sdt', info?.sdt ?? ''),
                 ),
@@ -131,7 +131,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           info.city.isNotEmpty
                       ? '${info.address}, ${info.district}, ${info.city}'
                       : 'Chưa có địa chỉ',
-                  isEmpty: info?.address?.isEmpty ?? true,
+                  isEmpty: info?.address.isEmpty ?? true,
                   maxLines: 2,
                   onEdit: () => _showEditAddressDialog(context, info),
                 ),
@@ -410,6 +410,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         return CheckoutSummary(
           subTotal: cartProvider.subTotal,
           shippingFee: shippingFee,
+
           buttonText: checkoutProvider.isLoading ? 'Đang xử lý...' : 'Đặt hàng',
           onCheckout: checkoutProvider.isLoading
               ? null
@@ -469,6 +470,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       cartItems: cartProvider.cartItems,
       subtotal: cartProvider.subTotal,
       shippingFee: shippingFee,
+      status: 'pending',
     );
 
     if (orderId != null) {

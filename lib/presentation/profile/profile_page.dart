@@ -2,7 +2,7 @@ import 'package:app/page/login_screens.dart';
 import 'package:app/presentation/profile/providers/profile_provider.dart';
 import 'package:app/presentation/profile/widget/edit_profile_widget.dart';
 import 'package:app/presentation/profile/widget/change_password_widget.dart';
-import 'package:app/sevices/dialog_sevices.dart';
+import 'package:app/presentation/order/order_history.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -94,8 +94,30 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 16),
                 _infoCard(user),
                 const SizedBox(height: 16),
+                Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withAlpha(18), blurRadius: 8),
+                ],
+              ),
+              child: ListTile(
+                leading: const Icon(Icons.history, color: Colors.lightBlueAccent),
+                title: const Text('Lịch sử mua hàng'),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 15),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => OrderHistoryPage()),
+                  );
+                },
+              ),
+            ),
+                const SizedBox(height: 16),
                 _securityCard(context, profileProvider),
                 const SizedBox(height: 20),
+                
               ],
             ),
           );
@@ -159,6 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
             'Số điện thoại',
             user.phone.isEmpty ? 'Chưa cập nhật' : user.phone,
           ),
+          
         ],
       ),
     );
@@ -187,6 +210,7 @@ class _ProfilePageState extends State<ProfilePage> {
             },
             child: _rowItem(Icons.lock, 'Mật khẩu', '••••••••'),
           ),
+          
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
