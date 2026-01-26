@@ -1,4 +1,5 @@
 import 'package:app/admin/presentation/dashboard_screen.dart';
+import 'package:app/admin/presentation/product/provider/admin_product_provider.dart';
 import 'package:app/bottom_nav_basic.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/page/login_screens.dart';
@@ -35,6 +36,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => CheckoutProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
         ChangeNotifierProvider(create: (context) => OrderHistoryProvider()),
+        ChangeNotifierProvider(create: (context) => AdminProductProvider()),
       ],
       child: const MyApp(),
     ),
@@ -57,7 +59,9 @@ class MyApp extends StatelessWidget {
               future: AuthSevices().checkAdmin(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return snapshot.data! ? const DashboardScreen() : BottomNavBasic();
+                  return snapshot.data!
+                      ? const DashboardScreen()
+                      : BottomNavBasic();
                 }
                 return const Center(child: CircularProgressIndicator());
               },

@@ -1,4 +1,5 @@
 import 'package:app/admin/presentation/messager/admin_mesager_page.dart';
+import 'package:app/admin/presentation/product/admin_product_page.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -12,10 +13,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _indexSelected = 0;
   final List<Widget> screens = [
     const Center(child: Text('Dashboard')),
-    const Center(child: Text('Sản phẩm')),
+    const AdminProductPage(),
     const Center(child: Text('Đơn hàng')),
     const Center(child: Text('Người dùng')),
-    const AdminMesagerPage()
+    const AdminMesagerPage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Dashboard'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.wb_iridescent_outlined),
             label: 'Sản phẩm',
