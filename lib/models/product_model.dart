@@ -25,4 +25,33 @@ class ProductModel {
       price: json['price'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'brands': brandId,
+      'descriptions': description,
+      'image': images,
+      'name': name,
+      'price': price,
+    };
+  }
+
+  ProductModel copyWith({
+    String? id,
+    int? brandId,
+    String? name,
+    int? price,
+    String? images,
+    String? description,
+  }) {
+    return ProductModel(
+      id: id ?? this.id,
+      brandId: brandId ?? this.brandId,
+      name: name ?? this.name,
+      price: price ?? this.price,
+      images: images ?? this.images,
+      description: description ?? this.description,
+    );
+  }
 }
